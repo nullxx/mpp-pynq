@@ -22,14 +22,16 @@ const engine = new Styletron();
 
 // TODO layout
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
+  <>
     <Toaster position="bottom-left" />
     <ErrorBoundary>
       <StyletronProvider value={engine} debug={debug}>
         <App />
       </StyletronProvider>
     </ErrorBoundary>
-  </React.StrictMode>
+  </>
+  // </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

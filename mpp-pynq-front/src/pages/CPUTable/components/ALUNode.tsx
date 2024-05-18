@@ -25,8 +25,8 @@ const DEFAULT_SELALU_VALUE = 0;
 export default function ALUNode({ data, id }: any) {
   const [selAlu, setSelAlu] = useState(DEFAULT_SELALU_VALUE);
 
-  function onUIUpdate() {
-    const selAlu = execute<number>("get_control_bus_selalu");
+  async function onUIUpdate() {
+    const selAlu = await execute<number>("get_control_bus_selalu");
     setSelAlu(selAlu);
   }
 

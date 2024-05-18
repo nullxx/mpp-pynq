@@ -50,13 +50,9 @@ function App() {
   }, [coreLoaded]);
 
   React.useEffect(() => {
-    connectBackend()
-      .then(() => {
-        setCoreLoaded(true);
-      })
-      .catch(() => {
-        setCoreLoaded(false);
-      });
+    connectBackend(() => { // if the first try fails, we can recall this callback function instead of resolving a promise that will never resolve after being rejected
+      setCoreLoaded(true);
+    });
   }, []);
 
   return (

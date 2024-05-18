@@ -18,6 +18,7 @@ import TranslatedEditor from "./TranslatedEditor";
 import { Annotation } from "brace";
 import { loc } from "../../../lib/i18n";
 import I18n, { useI18n } from "../../../components/i18n";
+// import { notifyUpdateToSubscribers } from "../../../lib/core/wrapped";
 
 const { Panel } = Collapse;
 
@@ -120,8 +121,10 @@ export default function CodeEditor({
     if (offsetValid) onNewOffset(newValue);
   }
 
-  function handlePCChange() {
-    getCore().set_register_pc(initOffset);
+  async function handlePCChange() {
+    await getCore().set_register_pc(initOffset);
+    await getCore().skip_cycles(0);
+    // notifyUpdateToSubscribers();
   }
 
   function handleSelectExample(code: string) {

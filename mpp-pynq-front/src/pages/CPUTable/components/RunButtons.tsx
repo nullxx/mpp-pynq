@@ -14,7 +14,7 @@ import {
 import { useState, useEffect, useRef } from "react";
 import { getStoredValue } from "../../../lib/storage";
 import { Space, Button, Tooltip, Collapse, List } from "antd";
-import { getCore, notifyUpdateToSubscribers } from "../../../lib/core/index";
+import { getCore } from "../../../lib/core/index";
 import I18n, { useI18n } from "../../../components/i18n";
 import toast from "react-hot-toast";
 
@@ -65,9 +65,9 @@ export default function RunButtons() {
   const [isRuningInmediate, setIsRuningInmediate] = useState(false);
   const isBreak = useRef<AbortController>(new AbortController());
 
-  function handleRunState() {
+  async function handleRunState() {
     setRunning(true);
-    clockCycleTime = getCore().run_clock_cycle(true);
+    clockCycleTime = await getCore().run_clock_cycle(true);
     setRunning(false);
   }
 
@@ -77,13 +77,10 @@ export default function RunButtons() {
       SettingDefaultValue.CYCLE_TIME
     );
     _running.current = true;
+
     setRunning(true);
-    while (_running.current) {
-      clockCycleTime = getCore().run_clock_cycle(true);
-      const nextState = getCore().get_next_state();
-      if (nextState === 0) break;
-      await sleep(cycleTime, isBreak.current.signal);
-    }
+
+    await getCore().run_instruction(cycleTime, true);
     setRunning(false);
     _running.current = false;
   }
@@ -111,26 +108,17 @@ export default function RunButtons() {
       SettingDefaultValue.CYCLE_TIME
     );
     _running.current = true;
-    const maxRepresentableValue =
-      Math.pow(2, getCore().get_memory_value_size_bits()) - 1;
-    let stoping = false;
 
     let lastCheck = start;
-    while (_running.current) {
-      clockCycleTime = getCore().run_clock_cycle(!isRuningInmediate);
-      if (stoping) break; // doing this to "execute" FF. S0 -> S1 -> (next) S0. And leave ready for next
-      const riRegister = getCore().get_register_ri();
-      stoping = riRegister === maxRepresentableValue;
-      await sleep(cycleTime, isBreak.current.signal);
 
+    const checkFn = async () => {
       const now = new Date().getTime();
       if (now - lastCheck > maxTimeInmediate && isRuningInmediate) {
-        notifyUpdateToSubscribers();
 
         const shouldContinue = await new Promise((resolve) => {
           toast(
             (t) => (
-              <div style={{display: 'block'}}>
+              <div style={{ display: 'block' }}>
                 <b><I18n k="status.runningTooLong" capitalize /></b>
                 <div style={{ height: 10 }} />
                 <div style={{ display: "flex", gap: 10 }}>
@@ -170,25 +158,24 @@ export default function RunButtons() {
             }
           );
         });
-
         if (!shouldContinue) {
-          start += (new Date().getTime() - now)
-          stoping = true;
-          break;
+          await getCore().abort_running();
+        } else {
+          lastCheck = new Date().getTime();
+          setTimeout(checkFn, 500);
         }
-
-        await sleep(100, isBreak.current.signal); // wait for the toast to be dismissed
-        lastCheck = new Date().getTime();
-        start += (new Date().getTime() - now)
       }
+
     }
 
+    setTimeout(checkFn, 500);
+
+    const time = (await getCore().run_program(cycleTime, !isRuningInmediate)) * 1000;
+
     if (isRuningInmediate) {
-      notifyUpdateToSubscribers();
       toast.dismiss(t);
     }
 
-    const end = new Date().getTime();
     setRunning(false);
     _running.current = false;
 
@@ -198,22 +185,23 @@ export default function RunButtons() {
     );
 
     if (shouldMeasureTime) {
-      const time = end - start;
-      toast(`Time: ${time}ms`, {
+      toast(`Time: ${time.toFixed(2)}ms`, {
         icon: "🕒",
       });
     }
   }
 
-  const handleStopRunning = () => {
+  const handleStopRunning = async () => {
     _running.current = false; // will stop running the next loop
     // it can be in the sleep function so we abort the sleep
     isBreak.current.abort();
+    await getCore().abort_running();
     isBreak.current = new AbortController();
   };
 
   useEffect(() => {
     _running.current = running;
+    // isCurrentRunning = running;
   }, [running]);
 
   useEffect(() => {
@@ -221,9 +209,10 @@ export default function RunButtons() {
       SettingType.CYCLE_TIME,
       SettingDefaultValue.CYCLE_TIME
     );
-    setIsRuningInmediate(initialCycleTime === 0);
+    setIsRuningInmediate(initialCycleTime < 500);
+
     const cb = (v: number) => {
-      setIsRuningInmediate(v === 0);
+      setIsRuningInmediate(v < 500);
     };
     addChangeListener(SettingType.CYCLE_TIME, cb);
 

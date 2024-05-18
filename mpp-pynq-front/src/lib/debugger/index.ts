@@ -5,7 +5,7 @@ interface FindOperationValue {
   operation: string;
   range: [number, number];
 }
-type ReplacementFn = (offset: number, operation: string) => string;
+type ReplacementFn = (offset: number, operation: string, { memoryData }: { memoryData: number[] }) => Promise<string>;
 
 const INM_NAME = "inm";
 const DIR_NAME = "dir";
@@ -15,8 +15,15 @@ const replacementFunctions: ReplacementFn[] = [replaceInm, replaceDir];
 
 let memSize: null | number = null;
 
-export function deductOperationOf(fromMemOffset: number, toMemOffset: number) {
-  if (memSize == null) memSize = execute<number>("get_memory_size");
+export async function collectMemoryData(fromMemOffset: number, toMemOffset: number) {
+  const memoryData: number[] = new Array(toMemOffset - fromMemOffset + 4).fill(0);
+  for (let i = fromMemOffset; i < toMemOffset; i++) {
+    memoryData[i - fromMemOffset] = await execute<number>("get_memory_value", i);
+  }
+  return memoryData;
+}
+export async function deductOperationOf(fromMemOffset: number, toMemOffset: number) {
+  if (memSize == null) memSize = await execute<number>("get_memory_size");
   if (toMemOffset < fromMemOffset) {
     throw new Error("toMemOffset must be greater than fromMemOffset");
   }
@@ -27,12 +34,16 @@ export function deductOperationOf(fromMemOffset: number, toMemOffset: number) {
     toMemOffset = memSize;
   }
 
+  // collect all memory data
+  const memoryData = await collectMemoryData(fromMemOffset, toMemOffset);
+
   const operations: FindOperationValue[] = [];
 
   let initOffset = fromMemOffset;
   do {
-    const currentMemValue = execute<number>("get_memory_value", initOffset);
-    const operation = findOperation(initOffset, currentMemValue);
+    // const currentMemValue = await execute<number>("get_memory_value", initOffset);
+    const currentMemValue = memoryData[initOffset];
+    const operation = await findOperation(initOffset, currentMemValue, { memoryData });
     if (!operation) {
       initOffset++;
       continue;
@@ -45,32 +56,39 @@ export function deductOperationOf(fromMemOffset: number, toMemOffset: number) {
   return operations;
 }
 
-function findOperation(
+async function findOperation(
   initOffset: number,
-  memValue: number
-): FindOperationValue | null {
+  memValue: number,
+  { memoryData }: { memoryData: number[] }
+): Promise<FindOperationValue | null> {
   const op = operations.find((o) => parseInt(o.HEX, 16) === memValue);
   if (!op && !FILL_NO_OP) return null;
   if (!op) return { operation: NO_OP_NAME, range: [initOffset, initOffset] };
   return {
-    operation: doReplacements(initOffset, op.NEMO),
+    operation: await doReplacements(initOffset, op.NEMO, { memoryData}),
     range: [initOffset, initOffset + op.ALLOC - 1],
   };
 }
 
-function doReplacements(offset: number, operation: string) {
-  return replacementFunctions.reduce((acc, fn) => fn(offset, acc), operation);
+async function doReplacements(offset: number, operation: string, { memoryData }: { memoryData: number[] }) {
+  for (const fn of replacementFunctions) {
+    operation = await fn(offset, operation, {memoryData});
+  }
+  return operation;
 }
 
-function replaceInm(offset: number, operation: string) {
+async function replaceInm(offset: number, operation: string, { memoryData }: { memoryData: number[] }) {
   return operation.replace(
     INM_NAME,
-    execute<number>("get_memory_value", offset + 1).toString(16).toUpperCase()
+    // (await execute<number>("get_memory_value", offset + 1)).toString(16).toUpperCase()
+    memoryData[offset + 1].toString(16).toUpperCase()
   );
 }
 
-function replaceDir(offset: number, operation: string) {
-  const hdir = execute<number>("get_memory_value", offset + 1).toString(16).toUpperCase();
-  const ldir = execute<number>("get_memory_value", offset + 2).toString(16).toUpperCase();
+async function replaceDir(offset: number, operation: string, { memoryData }: { memoryData: number[] }) {
+  // const hdir = (await execute<number>("get_memory_value", offset + 1)).toString(16).toUpperCase();
+  const hdir = memoryData[offset + 1].toString(16).toUpperCase();
+  // const ldir = (await execute<number>("get_memory_value", offset + 2)).toString(16).toUpperCase();
+  const ldir = memoryData[offset + 2].toString(16).toUpperCase();
   return operation.replace(DIR_NAME, `${hdir}${ldir}`);
 }

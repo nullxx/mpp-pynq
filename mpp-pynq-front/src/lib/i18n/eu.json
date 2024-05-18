@@ -1,5 +1,6 @@
 {
     "title": "M++ simulagailua",
+    "subtitle": "Aurpegi polita hardwarean exekutatutako M++-rako",
     "words.documentation": "Dokumentazioa",
     "words.loading": "Kargatzen",
     "downloadingCode": "Kodea jaisten",
@@ -39,7 +40,7 @@
     "settings.onboarding.off": "Tutoriala aktibatu",
     "settings.measureRunTime.on": "Exekuzio denboraren neurketa desaktibatu",
     "settings.measureRunTime.off": "Exekuzio denboraren neurketa aktibatu",
-    "settings.cycleTimeZeroMsg": "Exekuzioa ia berehalakoa izango da.",
+    "settings.cycleTimeZeroMsg": "Exekuzioak ez du interfazean aldaketarik eragingo programa amaitu arte.",
     "info.title": "Informazioa",
     "info.about.title": "Honi buruz",
     "info.about.description": "Mpp simulagailu sinple, azkar eta indartsua da plus plus makinarako, <a href=\"https://nullx.me\" target=\"_blank\">nullx</a>",
@@ -95,6 +96,7 @@
     "memory.label": "Memoria",
     "transitionstates.noStates": "Egoerarik gabe",
     "transitionstates.nextState": "Hurrengo egoera",
+    "transitionstates.currentState": "Uneko egoera",
     "transitionstates.executed": "Exekutatuta",
     "memory.reading": "Irakurtzen",
     "memory.writing": "Idazten",

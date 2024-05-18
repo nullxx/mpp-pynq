@@ -1,77 +1,165 @@
-export interface MppCoreExtension {
-  getValue: (ptr: any, type?: string) => any;
+
+
+export enum Registers {
+  'PC_REG_OFFSET' = 0,
+  'DATA_BUS_REG_OFFSET' = 1,
+  'DIR_BUS_REG_OFFSET' = 2,
+  'ACUM_REG_OFFSET' = 3,
+  'OP2_REG_OFFSET' = 4,
+  'SP_REG_OFFSET' = 5,
+  'H_REG_OFFSET' = 6,
+  'L_REG_OFFSET' = 7,
+  'RI_REG_OFFSET' = 8,
+  'STATE_REG_OFFSET' = 9,
+  'NEXT_STATE_REG_OFFSET' = 10,
+  'MEM_VALUE_READED_REG_OFFSET' = 11,
+  'MXDIR_OUT_REG_OFFSET' = 12,
+  'RB_REG_OFFSET' = 13,
+  'RC_REG_OFFSET' = 14,
+  'RD_REG_OFFSET' = 15,
+  'RE_REG_OFFSET' = 16,
+  'ALU_OUT_REG_OFFSET' = 17,
+  'FZ_REG_OFFSET' = 18,
+  'FC_REG_OFFSET' = 19
+}
+
+export enum SocketEvents {
+  RESET_PL = 'reset_pl',
+  DOWNLOAD_BITSTREAM = 'download_bitstream',
+  RESET = 'reset',
+  WRITE_REG = 'write_reg',
+  READ_REG = 'read_reg',
+  WRITE_TO_MEM = 'write_to_mem',
+  READ_MEM = 'read_mem',
+  LOAD_PROGRAM = 'load_program',
+  RUN_CYCLE = 'run_cycle',
+  SET_PC = 'set_pc',
+  SKIP_CYCLES = 'skip_cycles',
+  EXECUTE_PROGRAM = 'execute_program',
+  EXECUTE_INSTRUCTION = 'execute_instruction',
+  ABORT_RUNNING = 'abort_running'
+}
+
+// the data depends on the event
+export interface SocketData {
+  [SocketEvents.RESET_PL]: {};
+  [SocketEvents.DOWNLOAD_BITSTREAM]: {};
+  [SocketEvents.RESET]: { with_control: boolean };
+  [SocketEvents.WRITE_REG]: { reg_num: Registers, value: number };
+  [SocketEvents.READ_REG]: { reg_num: Registers };
+  [SocketEvents.WRITE_TO_MEM]: { offset: number; value: number };
+  [SocketEvents.READ_MEM]: { offset: number };
+  [SocketEvents.LOAD_PROGRAM]: { program: number[] };
+  [SocketEvents.RUN_CYCLE]: {};
+  [SocketEvents.SET_PC]: { value: number };
+  [SocketEvents.SKIP_CYCLES]: { until_state: number };
+  [SocketEvents.EXECUTE_PROGRAM]: { updateUI: boolean, cycle_sleep_time: number };
+  [SocketEvents.EXECUTE_INSTRUCTION]: { updateUI: boolean, cycle_sleep_time: number };
+  [SocketEvents.ABORT_RUNNING]: {};
+  id: string;
+}
+
+export interface SocketResponse {
+  [SocketEvents.RESET_PL]: { status: string };
+  [SocketEvents.DOWNLOAD_BITSTREAM]: { status: string };
+  [SocketEvents.RESET]: { status: string };
+  [SocketEvents.WRITE_REG]: { status: string };
+  [SocketEvents.READ_REG]: { reg_num: Registers, value: number };
+  [SocketEvents.WRITE_TO_MEM]: { status: string };
+  [SocketEvents.READ_MEM]: { offset: number, value: number };
+  [SocketEvents.LOAD_PROGRAM]: { status: string };
+  [SocketEvents.RUN_CYCLE]: { elapsed_time: number };
+  [SocketEvents.SET_PC]: { status: string };
+  [SocketEvents.SKIP_CYCLES]: { status: string };
+  [SocketEvents.EXECUTE_PROGRAM]: { elapsed_time: number };
+  [SocketEvents.EXECUTE_INSTRUCTION]: { elapsed_time: number };
+  [SocketEvents.ABORT_RUNNING]: { status: string };
+  id: string;
 }
 
 export interface MppCore {
-  linker_set_update_ui(fnptr: number): void;
+  // linker_set_update_ui(): void;
 
-  init(): void;
-  shutdown(): void;
+  reset_pl(): Promise<void>;
+  download_bitstream(): Promise<void>;
+  reset(with_control: boolean): Promise<void>;
+
+  shutdown(): Promise<void>;
 
   get_memory_size(): number;
   get_memory_value_size_bits(): number;
-  get_memory_value(offset: number): number;
-  get_memory_dir_bus(): number;
+  get_memory_value(offset: number): Promise<number>;
+  get_memory_dir_bus(): Promise<number>;
 
-  get_register_acum(): number;
-  get_register_fc(): number;
-  get_register_fz(): number;
-  get_register_b(): number;
-  get_register_c(): number;
-  get_register_d(): number;
-  get_register_e(): number;
-  get_register_h(): number;
-  get_register_l(): number;
-  get_register_2op(): number;
-  get_register_pch(): number;
-  get_register_pcl(): number;
-  get_register_pc(): number;
-  get_register_sp(): number;
-  get_register_ri(): number;
+  get_register_acum(): Promise<number>;
+  get_register_fc(): Promise<number>;
+  get_register_fz(): Promise<number>;
+  get_register_b(): Promise<number>;
+  get_register_c(): Promise<number>;
+  get_register_d(): Promise<number>;
+  get_register_e(): Promise<number>;
+  get_register_h(): Promise<number>;
+  get_register_l(): Promise<number>;
+  get_register_2op(): Promise<number>;
+  get_register_pch(): Promise<number>;
+  get_register_pcl(): Promise<number>;
+  get_register_pc(): Promise<number>;
+  get_register_sp(): Promise<number>;
+  get_register_ri(): Promise<number>;
 
-  get_data_bus(): number;
-  get_control_bus_pccar(): number;
-  get_control_bus_accar(): number;
-  get_control_bus_acbus(): number;
-  get_control_bus_spcar(): number;
-  get_control_bus_2opcar(): number;
-  get_control_bus_hcar(): number;
-  get_control_bus_lcar(): number;
-  get_control_bus_ricar(): number;
-  get_control_bus_membus(): number;
-  get_control_bus_le(): number;
-  get_control_bus_regcar(): number;
-  get_control_bus_regbus(): number;
-  get_control_bus_selalu(): number;
+  get_data_bus(): Promise<number>;
+  get_control_bus_pccar(): Promise<number>;
+  get_control_bus_accar(): Promise<number>;
+  get_control_bus_acbus(): Promise<number>;
+  get_control_bus_spcar(): Promise<number>;
+  get_control_bus_2opcar(): Promise<number>;
+  get_control_bus_hcar(): Promise<number>;
+  get_control_bus_lcar(): Promise<number>;
+  get_control_bus_ricar(): Promise<number>;
+  get_control_bus_membus(): Promise<number>;
+  get_control_bus_le(): Promise<number>;
+  get_control_bus_regcar(): Promise<number>;
+  get_control_bus_regbus(): Promise<number>;
+  get_control_bus_selalu(): Promise<number>;
 
-  run_clock_cycle(updateUI: boolean): number;
-  get_state(): number;
-  get_next_state(): number;
-  reset_control(): void;
+  run_clock_cycle(updateUI: boolean): Promise<number>;
+  get_state(): Promise<number>;
+  get_next_state(): Promise<number>;
+  skip_cycles(until_state: number): Promise<void>;
 
-  set_memory_value(offset: number, value: number): void;
-  set_register_pc(value: number): void;
+  set_memory_value(offset: number, value: number): Promise<void>;
+  set_register_pc(value: number): Promise<void>;
+
+  set_program(program: number[]): Promise<void>;
+
+  run_program(cycle_sleep_time: number, updateUI: boolean): Promise<number>;
+  run_instruction(cycle_sleep_time: number, updateUI: boolean): Promise<number>;
+  abort_running(): Promise<void>;
 }
 
 export type UIUpdateCallbackFn = () => void;
 
-function throwUninitializedError(fnName: keyof (MppCore & MppCoreExtension)): never {
+function throwUninitializedError(fnName: keyof (MppCore)): never {
   throw new Error(
     `Cannot call function ${fnName} because core is not initialized`
   );
 }
-export function emptyMppCore(): MppCore & MppCoreExtension {
+export function emptyMppCore(): MppCore {
   return {
-    getValue: (ptr: any, type?: string) => {
-      throwUninitializedError("getValue");
+    // linker_set_update_ui: () => {
+    //   throwUninitializedError("linker_set_update_ui");
+    // },
+
+    reset_pl: async () => {
+      throwUninitializedError("reset_pl");
     },
 
-    linker_set_update_ui: (fnptr: number) => {
-      throwUninitializedError("linker_set_update_ui");
+    download_bitstream: async () => {
+      throwUninitializedError("download_bitstream");
     },
 
-    init: () => {
-      throwUninitializedError("init");
+    reset: async () => {
+      throwUninitializedError("reset");
     },
 
     shutdown: () => {
@@ -230,8 +318,24 @@ export function emptyMppCore(): MppCore & MppCoreExtension {
       throwUninitializedError("set_register_pc");
     },
 
-    reset_control: () => {
-      throwUninitializedError("reset_control");
+    skip_cycles(until_state: number) {
+      throwUninitializedError("skip_cycles");
     },
+
+    set_program(program: number[]) {
+      throwUninitializedError("set_program");
+    },
+
+    run_program() {
+      throwUninitializedError("run_program");
+    },
+
+    run_instruction() {
+      throwUninitializedError("run_instruction");
+    },
+
+    abort_running() {
+      throwUninitializedError("abort_running");
+    }
   };
 }

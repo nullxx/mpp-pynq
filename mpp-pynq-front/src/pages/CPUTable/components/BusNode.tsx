@@ -15,13 +15,13 @@ export default memo(({ data, isConnectable, id }: any) => {
   const [value, setValue] = React.useState(DEFAULT_BUS_VALUE);
   const [, setChanged] = React.useState(false);
 
-  function onUIUpdate() {
+  async function onUIUpdate() {
     if (!data.getFunction)
       return console.warn(
         `Not updating ${data.label}. Missing data.getFunction`
       );
 
-    const out = execute(data.getFunction);
+    const out = await execute(data.getFunction);
 
     setValue((prevValue) => {
       let hasChanged = false;

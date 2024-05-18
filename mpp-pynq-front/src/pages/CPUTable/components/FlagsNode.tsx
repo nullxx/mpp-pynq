@@ -14,9 +14,9 @@ export default function FlagsNode({ data, id }: any) {
   const [fc, setFc] = useState(false);
   const [changed, setChanged] = useState(false);
 
-  function onUIUpdate() {
-    const fz = Boolean(execute<number>("get_register_fz"));
-    const fc = Boolean(execute<number>("get_register_fc"));
+  async function onUIUpdate() {
+    const fz = Boolean(await execute<number>("get_register_fz"));
+    const fc = Boolean(await execute<number>("get_register_fc"));
 
     let hasChanged = false;
     setFz((prevFz) => {

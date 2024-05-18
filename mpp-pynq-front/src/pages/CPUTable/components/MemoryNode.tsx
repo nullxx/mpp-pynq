@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Row, Col, Text } from "atomize";
 
 import NumberBaseInput, { getRadix } from "../../../components/NumberBaseInput";
@@ -16,23 +16,29 @@ import { SettingType, SettingDefaultValue } from "./Settings";
 import { Handle, Position } from "react-flow-renderer";
 import useUpdateEdges from "../../../hook/useUpdateEdges";
 import I18n from "../../../components/i18n";
+import { useReadAsync } from "../../../hook/useReadAsync";
+
+let maxRepresentableOffset = -1;
 
 function MemoryComponentRow({
   offset,
+  offsetRadix,
   value,
   style,
   valueBaseRadix,
 }: {
-  offset: string;
-  value: string | number;
+  offset: number;
+  offsetRadix: number;
+  value: number;
   style?: React.CSSProperties;
   valueBaseRadix: number;
 }) {
-  if (Number(value) === -1) return null;
+  if (offset < 0 || offset > maxRepresentableOffset) return null;
+  
 
   return (
     <Row style={style}>
-      <Col>{offset}</Col>
+      <Col>{offset.toString(offsetRadix).toUpperCase()}</Col>
       <Col>
         {Number(value).toString(valueBaseRadix).toUpperCase()}
         <sub>({valueBaseRadix})</sub>
@@ -48,13 +54,9 @@ function MemoryComponent({ offset, base }: { offset: number; base: Base }) {
   const currOffset = Number(offset);
   const nextOffset = Number(offset + 1);
 
-  const prevOffsetStr = Number(offset - 1).toString(radix);
-  const currOffsetStr = Number(offset).toString(radix);
-  const nextOffsetStr = Number(offset + 1).toString(radix);
-
-  const prevValue = getCore().get_memory_value(prevOffset);
-  const currValue = getCore().get_memory_value(currOffset);
-  const nextValue = getCore().get_memory_value(nextOffset);
+  const [prevValue] = useReadAsync<number>(() => getCore().get_memory_value(prevOffset))
+  const [currValue] = useReadAsync<number>(() => getCore().get_memory_value(currOffset))
+  const [nextValue] = useReadAsync<number>(() => getCore().get_memory_value(nextOffset))
 
   const valueBaseRadix = getRadix(
     getStoredValue(
@@ -70,18 +72,21 @@ function MemoryComponent({ offset, base }: { offset: number; base: Base }) {
         <Col>Value</Col>
       </Row>
       <MemoryComponentRow
-        offset={prevOffsetStr}
+        offset={prevOffset}
+        offsetRadix={radix}
         value={prevValue}
         valueBaseRadix={valueBaseRadix}
       />
       <MemoryComponentRow
-        offset={currOffsetStr}
+        offset={currOffset}
+        offsetRadix={radix}
         value={currValue}
         style={{ backgroundColor: "#f0c40094" }}
         valueBaseRadix={valueBaseRadix}
       />
       <MemoryComponentRow
-        offset={nextOffsetStr}
+        offset={nextOffset}
+        offsetRadix={radix}
         value={nextValue}
         valueBaseRadix={valueBaseRadix}
       />
@@ -90,6 +95,8 @@ function MemoryComponent({ offset, base }: { offset: number; base: Base }) {
 }
 
 const MemoryNode = ({ data, id }: { data: any; id: string }) => {
+  if (maxRepresentableOffset === -1) maxRepresentableOffset = getCore().get_memory_size() - 1;
+
   const [searchValue, setSearchValue] = React.useState(0);
   const [base, setBase] = React.useState<Base>("HEX");
   const [LE, setLE] = React.useState(1); // deafult reading
@@ -97,9 +104,9 @@ const MemoryNode = ({ data, id }: { data: any; id: string }) => {
   const forceUpdate = useForceUpdate();
   useUpdateEdges({ data, id });
 
-  function onUIUpdate() {
-    setSearchValue(getCore().get_memory_dir_bus());
-    setLE(getCore().get_control_bus_le());
+  async function onUIUpdate() {
+    setSearchValue(await getCore().get_memory_dir_bus());
+    setLE(await getCore().get_control_bus_le());
     forceUpdate(); // need to update state to force re-render because the searchValue is not changed, but the MemoryComponent could be changed
   }
 
@@ -162,6 +169,7 @@ const MemoryNode = ({ data, id }: { data: any; id: string }) => {
             onChange={onSearch}
             onBaseChange={onBaseChange}
             width={200}
+            max={maxRepresentableOffset}
           />
         </Col>
       </Row>

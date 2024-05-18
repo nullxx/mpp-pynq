@@ -1,10 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Row, Col, Text } from "atomize";
-import { Alert, Tooltip } from "antd";
-
-import NumberBaseInput from "../../../../components/NumberBaseInput";
-import { Base } from "../../../../constants/bases";
-
+import { Alert } from "antd";
 import {
   subscribeToUIUpdates,
   unsubscribeToUIUpdates,
@@ -14,7 +10,8 @@ import { deductOperationOf, NO_OP_NAME } from "../../../../lib/debugger";
 import { useForceUpdate } from "../../../../hook/forceUpdate";
 import I18n from "../../../../components/i18n";
 
-const maxOffsetPadding = 50;
+const offsetPadding = 50;
+
 
 function DebuggerComponentRow({
   range,
@@ -47,21 +44,41 @@ function DebuggerComponentRow({
 
 function DebuggerComponent({
   memOffset,
-  offsetPadding,
 }: {
   memOffset: number;
-  offsetPadding: number;
-  base: Base;
 }) {
   const pointerRef = React.useRef<HTMLDivElement>(null);
   const listScrollRef = React.useRef<HTMLDivElement>(null);
 
-  const result = deductOperationOf(
-    memOffset - offsetPadding,
-    memOffset + offsetPadding
-  );
+  const [result, setResult] = React.useState<any[]>([]);
 
-  const pointIndex = result.findIndex(
+  const deductOperations = (memOffset: number, offsetPadding: number) => {
+    deductOperationOf(memOffset - offsetPadding, memOffset + offsetPadding).then(
+      (operations) => {
+        setResult(operations);
+      }
+    );
+  }
+
+  const onUIUpdate = () => {
+    deductOperations(memOffset, offsetPadding);
+  }
+
+  React.useEffect(() => {
+    subscribeToUIUpdates(onUIUpdate);
+
+    return () => {
+      unsubscribeToUIUpdates(onUIUpdate);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    deductOperations(memOffset, offsetPadding);
+  }, [offsetPadding, memOffset])
+
+  // const result = [] as any[];
+  const pointIndex = result?.findIndex(
     ({ range: [start, end] }) => start <= memOffset && end >= memOffset
   );
 
@@ -95,14 +112,14 @@ function DebuggerComponent({
         <Row>
           <Col size="100%">
             <Alert
-              message={`No operation in ${memOffset.toString(16)}`}
+              message={`No operation in 0x${memOffset.toString(16).padStart(4, '0').toUpperCase()}`}
               type="warning"
             />
           </Col>
         </Row>
       )}
       <div style={{ overflow: "hidden", maxHeight: 200 }} ref={listScrollRef}>
-        {result.map((item, i) => {
+        {result?.map((item, i) => {
           return (
             <div
               ref={pointIndex === i ? pointerRef : undefined}
@@ -123,13 +140,11 @@ function DebuggerComponent({
 
 const DebuggerNode = ({ data }: { data: any }) => {
   const [searchValue, setSearchValue] = React.useState(0);
-  const [offsetPadding, setOffsetPadding] = React.useState(10);
-  const [base, setBase] = React.useState<Base>("DEC");
 
   const forceUpdate = useForceUpdate();
 
-  function onUIUpdate() {
-    setSearchValue(getCore().get_register_pc());
+  async function onUIUpdate() {
+    setSearchValue(await getCore().get_register_pc());
     forceUpdate(); // need to update state to force re-render because the searchValue is not changed, but the DebuggerComponent could be changed
   }
 
@@ -141,14 +156,6 @@ const DebuggerNode = ({ data }: { data: any }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onSearch = (num: number, base: Base) => {
-    setOffsetPadding(num);
-    setBase(base);
-  };
-
-  const onBaseChange = (base: Base) => {
-    setBase(base);
-  };
 
   return (
     <div
@@ -167,26 +174,8 @@ const DebuggerNode = ({ data }: { data: any }) => {
       </Row>
       <Row>
         <Col size="100%">
-          <Tooltip title={<I18n k="debugger.boundsPadding" />}>
-            <div>
-              <NumberBaseInput
-                initialBase={base}
-                number={offsetPadding}
-                onChange={onSearch}
-                onBaseChange={onBaseChange}
-                width={200}
-                max={maxOffsetPadding}
-              />
-            </div>
-          </Tooltip>
-        </Col>
-      </Row>
-      <Row>
-        <Col size="100%">
           <DebuggerComponent
             memOffset={searchValue}
-            offsetPadding={offsetPadding}
-            base={base}
           />
         </Col>
       </Row>

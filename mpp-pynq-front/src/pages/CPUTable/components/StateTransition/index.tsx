@@ -17,17 +17,11 @@ interface State {
   op: string;
 }
 
-const maxItems = 2;
-
 export default function StateTransition({ data }: { data: any }) {
   const [states, setStates] = useState<State[]>([]);
-  const [currentState, setCurrentState] = useState(0);
-  const [nextState, setNextState] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
 
   const divRef = React.useRef<HTMLDivElement>(null);
-  const prevCurrentState = usePrev(currentState);
-  const prevNextState = usePrev(nextState);
 
   React.useEffect(() => {
     if (divRef.current) {
@@ -35,41 +29,21 @@ export default function StateTransition({ data }: { data: any }) {
     }
   }, [states.length]);
 
-  function onUIUpdate() {
-    const nextStateNumber = getCore().get_next_state();
-    const currentStateNumber = getCore().get_state();
+  async function onUIUpdate() {
+    const nextStateNumber = await getCore().get_next_state();
+    const currentStateNumber = await getCore().get_state();
 
-    if (currentStateNumber === prevCurrentState) return;
-    if (nextStateNumber === prevNextState) return;
 
     const nextState = stateDetails[nextStateNumber];
     const currentState = stateDetails[currentStateNumber];
 
-    setStates((prev) => {
-      const arr = [...prev];
+    const stss = [currentState, nextState]
+    setStates(stss);
 
-      if (arr.length >= maxItems) {
-        arr.splice(0, arr.length - maxItems);
-      }
-
-      if (prev.length === 0) {
-        arr.push(currentState, nextState);
-      } else {
-        arr.push(nextState);
-      }
-      setCurrentStep(arr.length - 1);
-
-      return arr;
-    });
-
-    setCurrentState(currentStateNumber);
-    setNextState(nextStateNumber);
   }
 
   function handleClear() {
     setStates([]);
-    setCurrentState(0);
-    setNextState(0);
     setCurrentStep(0);
   }
 
@@ -87,7 +61,7 @@ export default function StateTransition({ data }: { data: any }) {
       style={{
         maxHeight: 300,
         overflow: "auto",
-        width: 220,
+        width: 240,
         padding: 8,
         backgroundColor: "#f5f5f5",
       }}
@@ -102,21 +76,26 @@ export default function StateTransition({ data }: { data: any }) {
       </Row>
       <Row>
         <Col size="100%">
-          <Steps direction="vertical" size="small" current={currentStep}>
+          <Steps direction="vertical" size="small" current={currentStep} type="default" style={{textAlign: 'left'}} >
             {states.map((state: State, index: number, arr) => {
-              const title =
-                index === arr.length - 1 ? (
+              let title = null;
+              if (index === arr.length - 1) {
+
+                title = (
                   <I18n k="transitionstates.nextState" />
-                ) : (
-                  <>
-                    <CheckCircleFilled style={{ color: "green" }} /> <I18n k="transitionstates.executed" />
-                  </>
                 );
+              } else if (index === arr.length - 2) {
+                title = (
+                  <I18n k="transitionstates.currentState" />
+                )
+              }
+
               return (
                 <Step
                   className="state-transition-step"
                   key={index}
                   title={title}
+                  status={index === 0 ? "process" : "finish"}
                   description={state.op}
                   progressDot={() => "S" + state.state}
                 />

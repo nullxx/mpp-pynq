@@ -26,14 +26,18 @@ const Coder: React.FC = () => {
     setVisible(false);
   };
 
-  const handleSaveToMemory = () => {
-    getCore().reset_control(); // reset the control to start from the beginning
+  const handleSaveToMemory = async () => {
 
-    for (let i = 0; i < slots.length; i++) {
-      const slot = slots[i];
+    // for (let i = 0; i < slots.length; i++) {
+    //   const slot = slots[i];
 
-      getCore().set_memory_value(initOffset + i, parseInt(slot, 16));
-    }
+    //   await getCore().set_memory_value(initOffset + i, parseInt(slot, 16));
+    // }
+    const parsedSlots = slots.map((slot) => parseInt(slot, 16));
+    getCore().set_program(parsedSlots);
+    
+    await getCore().skip_cycles(0); // reset the control to start from the beginning
+    // notifyUpdateToSubscribers();
     onClose();
   };
 

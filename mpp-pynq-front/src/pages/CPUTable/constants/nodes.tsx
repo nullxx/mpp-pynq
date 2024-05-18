@@ -262,7 +262,7 @@ const nodes: Node[] = [
   },
   {
     id: "transition-state",
-    position: { x: -1028, y: 141 },
+    position: { x: -1040, y: 141 },
     type: "stateTransition",
     data: {
       labelKey: "transitionstate.label",

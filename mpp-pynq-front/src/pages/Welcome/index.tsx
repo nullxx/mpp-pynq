@@ -1,9 +1,21 @@
+import { useEffect, useState } from "react";
 import { Spin, Space, Typography } from "antd";
 import Image from "../../assets/icon.png";
 import Attribution from "../../components/Attribution";
 import I18n from "../../components/i18n";
+import { onInitializingMessageChange } from "../../lib/core";
 
 export default function Welcome() {
+  const [initializingMessage, setInitializingMessage] = useState<string>("");
+
+  useEffect(() => {
+    const del = onInitializingMessageChange(setInitializingMessage);
+
+    return () => {
+      del();
+    }
+  }, []);
+
   return (
     <Space
       direction="vertical"
@@ -26,7 +38,8 @@ export default function Welcome() {
       <Typography.Title><I18n k="title" /></Typography.Title>
 
       <img src={Image} alt="M++" height={200} />
-      <p><I18n k="words.loading" />...</p>
+      {/* <p><I18n k="words.loading" />...</p> */}
+      <p>{initializingMessage}</p>
       <Spin size="large" />
 
       <Attribution />

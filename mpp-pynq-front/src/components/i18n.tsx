@@ -7,7 +7,7 @@ function I18n({ k, options, capitalize = false, format, evalu = false }: { k: st
   useEffect(() => {
     const out = loc(k, options);
     setText(format ? format(out) : out);
-  }, [k, options]);
+  }, [k, options, format]);
 
   useEffect(() => {
     const del = onLanguageChange(() => {

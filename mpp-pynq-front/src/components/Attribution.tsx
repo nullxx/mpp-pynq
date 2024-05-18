@@ -4,7 +4,6 @@ import I18n from "./i18n";
 
 export default function Attribution() {
   return (
-    <Text>
       <I18n
         k="credit"
         format={(t =>
@@ -14,6 +13,5 @@ export default function Attribution() {
             ))}
         evalu
       />
-    </Text>
   );
 }

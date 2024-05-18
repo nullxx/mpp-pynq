@@ -19,13 +19,13 @@ export default memo(({ data, id }: any) => {
 
   useUpdateEdges({ data, id });
 
-  function onUIUpdate() {
+  async function onUIUpdate() {
     if (!data.getFunction)
       return console.warn(
         `Not updating ${data.label}. Missing data.getFunction`
       );
 
-    const out = execute(data.getFunction);
+    const out = await execute(data.getFunction);
 
     setValue((prevValue) => {
       let hasChanged = false;

@@ -16,9 +16,9 @@ export default function useUpdateEdges({
   const reactFlowInstance = useReactFlow();
   const allEdges = useEdges();
 
-  function onUIUpdate() {
+  async function onUIUpdate() {
     if (data.controlBusBitLoad) {
-      const controlBusBitLoadValue = execute(
+      const controlBusBitLoadValue = await execute(
         data.controlBusBitLoad?.getFunction
       );
 
@@ -46,7 +46,7 @@ export default function useUpdateEdges({
     }
 
     if (data.controlBusBitRelease) {
-      const controlBusBitReleaseValue = execute(
+      const controlBusBitReleaseValue = await execute(
         data.controlBusBitRelease?.getFunction
       );
 
