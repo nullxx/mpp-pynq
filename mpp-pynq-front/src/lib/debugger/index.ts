@@ -1,4 +1,4 @@
-import { execute } from "../core";
+import { getCore } from "../core";
 import operations from "../traslator/operations.json";
 
 interface FindOperationValue {
@@ -16,14 +16,18 @@ const replacementFunctions: ReplacementFn[] = [replaceInm, replaceDir];
 let memSize: null | number = null;
 
 export async function collectMemoryData(fromMemOffset: number, toMemOffset: number) {
+  const values = await getCore().get_memory_value_blk([fromMemOffset, toMemOffset]);
+  
   const memoryData: number[] = new Array(toMemOffset - fromMemOffset + 4).fill(0);
-  for (let i = fromMemOffset; i < toMemOffset; i++) {
-    memoryData[i - fromMemOffset] = await execute<number>("get_memory_value", i);
+  for (let i = 0; i < values.length; i++) {
+    memoryData[i] = values[i];
   }
-  return memoryData;
+
+  return memoryData; // memoryData has 4 extra elements
 }
+
 export async function deductOperationOf(fromMemOffset: number, toMemOffset: number) {
-  if (memSize == null) memSize = await execute<number>("get_memory_size");
+  if (memSize == null) memSize = getCore().get_memory_size();
   if (toMemOffset < fromMemOffset) {
     throw new Error("toMemOffset must be greater than fromMemOffset");
   }
@@ -80,15 +84,12 @@ async function doReplacements(offset: number, operation: string, { memoryData }:
 async function replaceInm(offset: number, operation: string, { memoryData }: { memoryData: number[] }) {
   return operation.replace(
     INM_NAME,
-    // (await execute<number>("get_memory_value", offset + 1)).toString(16).toUpperCase()
     memoryData[offset + 1].toString(16).toUpperCase()
   );
 }
 
 async function replaceDir(offset: number, operation: string, { memoryData }: { memoryData: number[] }) {
-  // const hdir = (await execute<number>("get_memory_value", offset + 1)).toString(16).toUpperCase();
   const hdir = memoryData[offset + 1].toString(16).toUpperCase();
-  // const ldir = (await execute<number>("get_memory_value", offset + 2)).toString(16).toUpperCase();
   const ldir = memoryData[offset + 2].toString(16).toUpperCase();
   return operation.replace(DIR_NAME, `${hdir}${ldir}`);
 }

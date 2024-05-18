@@ -34,6 +34,10 @@ export function getMppCoreWrapped(socket: Socket): MppCore {
             return (await emitWithReturn(socket, SocketEvents.READ_MEM, { offset })).value;
         },
 
+        get_memory_value_blk: async (range: [number, number]) => {
+            return (await emitWithReturn(socket, SocketEvents.READ_MEM_BLK, { range })).values;
+        },
+
         get_memory_dir_bus: async () => {
             return (await emitWithReturn(socket, SocketEvents.READ_REG, { reg_num: Registers.MXDIR_OUT_REG_OFFSET })).value;
         },
@@ -179,8 +183,8 @@ export function getMppCoreWrapped(socket: Socket): MppCore {
             await emitWithReturn(socket, SocketEvents.SKIP_CYCLES, { until_state });
         },
 
-        set_program: async (program: number[]) => {
-            await emitWithReturn(socket, SocketEvents.LOAD_PROGRAM, { program });
+        set_program: async (program: number[], offset_to_write: number) => {
+            await emitWithReturn(socket, SocketEvents.LOAD_PROGRAM, { program, offset_to_write });
         },
 
         abort_running: async () => {

@@ -18,58 +18,50 @@ const callbacksError = new Map<string, (response: any) => void>();
 let updateUIInited = false;
 // i want to listen all events but only one listener for each event.
 
-// const listeners = new Map<string, { id: string; cb: (data: any) => void; cbErr: (data: any) => void }>();
+const listeners = new Map<string, ({ id: string; cb: (data: any) => void; cbErr: (data: any) => void })[]>();
 
 export function emitWithReturn<T extends SocketEvents>(socket: Socket, event: T, data: SocketData[T]): Promise<SocketResponse[T]> {
     if (!updateUIInited) {
         updateUIInited = true;
         socket.on('update_ui', notifyUpdateToSubscribers);
     }
+
     return new Promise((resolve, reject) => {
-        // const id = generateId();
-        // listeners.set(event, {
-        //     id,
-        //     cb: resolve,
-        //     cbErr: reject
-        // });
-
-        // if (!callbacks.has(event)) {
-        //     const callback = (response: any) => {
-        //         const listener = listeners.get(event);
-        //         if (listener && listener.id === response.id) {
-        //             console.log(event, data, response);
-        //             listener.cb(response);
-        //         }
-        //     }
-
-        //     const callbackError = (response: any) => {
-        //         const listener = listeners.get(event);
-        //         if (listener && listener.id === response.id) {
-        //             listener.cbErr(response);
-        //         }
-        //     }
-        //     callbacks.set(event, callback);
-        //     callbacksError.set(event, callbackError);
-        //     socket.on(event + RESPONSE_SUFFIX, callback);
-        //     socket.on(event + ERROR_SUFFIX, callbackError);
-        // }
-
-        // socket.emit(event, { ...data, id });
-
         const id = generateId();
-
-        const listener = (data: any) => {
-            if (data.id === id) {
-                if (data.error) {
-                    reject(data.error);
-                } else {
-                    socket.off(event + RESPONSE_SUFFIX, listener);
-                    resolve(data);
-                }
-            }
+        if (!listeners.has(event)) {
+            listeners.set(event, []);
         }
 
-        socket.on(event + RESPONSE_SUFFIX, listener);
+        listeners.get(event)!.push({
+            id,
+            cb: resolve,
+            cbErr: reject
+        });
+
+        if (!callbacks.has(event)) {
+            const callback = (response: any) => {
+                const listener = listeners.get(event)!.find((l) => l.id === response.id);
+                if (listener) {
+                    listeners.get(event)!.splice(listeners.get(event)!.indexOf(listener), 1);
+                    listener.cb(response);
+                }
+            }
+
+            const callbackError = (response: any) => {
+                const listener = listeners.get(event)!.find((l) => l.id === response.id);
+                if (listener) {
+                    listeners.get(event)!.splice(listeners.get(event)!.indexOf(listener), 1);
+                    listener.cbErr(response);
+                }
+            }
+
+            callbacks.set(event, callback);
+            callbacksError.set(event, callbackError);
+
+            socket.on(event + RESPONSE_SUFFIX, callback);
+            socket.on(event + ERROR_SUFFIX, callbackError);
+        }
+
         socket.emit(event, { ...data, id });
     });
 }

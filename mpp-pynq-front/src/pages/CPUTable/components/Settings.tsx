@@ -162,7 +162,7 @@ const Settings: React.FC = () => {
           </Row>
         </Input.Group>
 
-        {cycleTime < 500 && (
+        {cycleTime < 50 && (
           <p>
             <I18n k="settings.cycleTimeZeroMsg" />
           </p>

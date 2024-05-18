@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Row, Col, Text } from "atomize";
 
 import NumberBaseInput, { getRadix } from "../../../components/NumberBaseInput";
@@ -9,14 +9,12 @@ import {
   unsubscribeToUIUpdates,
   getCore,
 } from "../../../lib/core/index";
-import { useForceUpdate } from "../../../hook/forceUpdate";
 import { Tooltip } from "antd";
 import { getStoredValue } from "../../../lib/storage";
 import { SettingType, SettingDefaultValue } from "./Settings";
 import { Handle, Position } from "react-flow-renderer";
 import useUpdateEdges from "../../../hook/useUpdateEdges";
 import I18n from "../../../components/i18n";
-import { useReadAsync } from "../../../hook/useReadAsync";
 
 let maxRepresentableOffset = -1;
 
@@ -34,7 +32,7 @@ function MemoryComponentRow({
   valueBaseRadix: number;
 }) {
   if (offset < 0 || offset > maxRepresentableOffset) return null;
-  
+
 
   return (
     <Row style={style}>
@@ -54,9 +52,29 @@ function MemoryComponent({ offset, base }: { offset: number; base: Base }) {
   const currOffset = Number(offset);
   const nextOffset = Number(offset + 1);
 
-  const [prevValue] = useReadAsync<number>(() => getCore().get_memory_value(prevOffset))
-  const [currValue] = useReadAsync<number>(() => getCore().get_memory_value(currOffset))
-  const [nextValue] = useReadAsync<number>(() => getCore().get_memory_value(nextOffset))
+  const [prevValue, setPrevValue] = React.useState(0);
+  const [currValue, setCurrValue] = React.useState(0);
+  const [nextValue, setNextValue] = React.useState(0);
+
+  async function loadValues() {
+    const values = await getCore().get_memory_value_blk([prevOffset, nextOffset]);
+    setPrevValue(values[0]);
+    setCurrValue(values[1]);
+    setNextValue(values[2]);
+  }
+
+  React.useEffect(() => {
+    subscribeToUIUpdates(loadValues);
+    return () => {
+      unsubscribeToUIUpdates(loadValues);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    loadValues();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [offset]);
 
   const valueBaseRadix = getRadix(
     getStoredValue(
@@ -101,13 +119,11 @@ const MemoryNode = ({ data, id }: { data: any; id: string }) => {
   const [base, setBase] = React.useState<Base>("HEX");
   const [LE, setLE] = React.useState(1); // deafult reading
 
-  const forceUpdate = useForceUpdate();
   useUpdateEdges({ data, id });
 
   async function onUIUpdate() {
     setSearchValue(await getCore().get_memory_dir_bus());
     setLE(await getCore().get_control_bus_le());
-    forceUpdate(); // need to update state to force re-render because the searchValue is not changed, but the MemoryComponent could be changed
   }
 
   React.useEffect(() => {

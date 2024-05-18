@@ -209,10 +209,10 @@ export default function RunButtons() {
       SettingType.CYCLE_TIME,
       SettingDefaultValue.CYCLE_TIME
     );
-    setIsRuningInmediate(initialCycleTime < 500);
+    setIsRuningInmediate(initialCycleTime < 50);
 
     const cb = (v: number) => {
-      setIsRuningInmediate(v < 500);
+      setIsRuningInmediate(v < 50);
     };
     addChangeListener(SettingType.CYCLE_TIME, cb);
 

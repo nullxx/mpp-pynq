@@ -31,6 +31,7 @@ export enum SocketEvents {
   READ_REG = 'read_reg',
   WRITE_TO_MEM = 'write_to_mem',
   READ_MEM = 'read_mem',
+  READ_MEM_BLK = 'read_mem_blk',
   LOAD_PROGRAM = 'load_program',
   RUN_CYCLE = 'run_cycle',
   SET_PC = 'set_pc',
@@ -49,7 +50,8 @@ export interface SocketData {
   [SocketEvents.READ_REG]: { reg_num: Registers };
   [SocketEvents.WRITE_TO_MEM]: { offset: number; value: number };
   [SocketEvents.READ_MEM]: { offset: number };
-  [SocketEvents.LOAD_PROGRAM]: { program: number[] };
+  [SocketEvents.READ_MEM_BLK]: { range: [number, number] };
+  [SocketEvents.LOAD_PROGRAM]: { program: number[]; offset_to_write: number };
   [SocketEvents.RUN_CYCLE]: {};
   [SocketEvents.SET_PC]: { value: number };
   [SocketEvents.SKIP_CYCLES]: { until_state: number };
@@ -67,6 +69,7 @@ export interface SocketResponse {
   [SocketEvents.READ_REG]: { reg_num: Registers, value: number };
   [SocketEvents.WRITE_TO_MEM]: { status: string };
   [SocketEvents.READ_MEM]: { offset: number, value: number };
+  [SocketEvents.READ_MEM_BLK]: { range: [number, number]; values: number[] };
   [SocketEvents.LOAD_PROGRAM]: { status: string };
   [SocketEvents.RUN_CYCLE]: { elapsed_time: number };
   [SocketEvents.SET_PC]: { status: string };
@@ -89,6 +92,7 @@ export interface MppCore {
   get_memory_size(): number;
   get_memory_value_size_bits(): number;
   get_memory_value(offset: number): Promise<number>;
+  get_memory_value_blk(range: [number, number]): Promise<number[]>;
   get_memory_dir_bus(): Promise<number>;
 
   get_register_acum(): Promise<number>;
@@ -130,7 +134,7 @@ export interface MppCore {
   set_memory_value(offset: number, value: number): Promise<void>;
   set_register_pc(value: number): Promise<void>;
 
-  set_program(program: number[]): Promise<void>;
+  set_program(program: number[], offset_to_write: number): Promise<void>;
 
   run_program(cycle_sleep_time: number, updateUI: boolean): Promise<number>;
   run_instruction(cycle_sleep_time: number, updateUI: boolean): Promise<number>;
@@ -176,6 +180,10 @@ export function emptyMppCore(): MppCore {
 
     get_memory_value: (offset: number) => {
       throwUninitializedError("get_memory_value");
+    },
+
+    get_memory_value_blk(range: [number, number]) {
+      throwUninitializedError("get_memory_value_blk");
     },
 
     get_memory_dir_bus: () => {

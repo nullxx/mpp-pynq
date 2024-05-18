@@ -12,8 +12,7 @@ let initializingLastMsg = "";
 type InitializingMessageChangeCallback = (msg: string) => void;
 const initializingMessageChangeListeners = new Set<InitializingMessageChangeCallback>();
 
-
-const url = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_API_URL : 'http://192.168.1.128:3000';
+const url = process.env.REACT_APP_API_URL;
 if (!url) throw new Error("API URL not defined");
 
 export const socket = io(url, {
@@ -51,7 +50,7 @@ export async function connectBackend(resolve: () => void) {
     console.info("Connected to backend");
     setInitializingMessage("Connected to API backend");
 
-    if (document.documentElement.classList.contains('reconnecting-disabled')) {
+    if (document.querySelector('.App')!.classList.contains('reconnecting-disabled')) {
       document.querySelector('.App')!.classList.toggle('reconnecting-disabled');
     }
     if (pendingToasts.length > 0) {
