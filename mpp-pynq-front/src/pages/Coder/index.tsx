@@ -77,7 +77,7 @@ const Coder: React.FC = () => {
         }
         placement="right"
         onClose={onClose}
-        visible={visible}
+        open={visible}
         extra={
           <Space>
             <Popconfirm

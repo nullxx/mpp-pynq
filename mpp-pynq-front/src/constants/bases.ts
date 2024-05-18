@@ -17,3 +17,9 @@ export const bases: { base: Base; radix: number; regex: RegExp }[] = [
     regex: /^[0-1]{1,}$/,
   },
 ];
+
+export const prefixes = {
+  BIN: "",
+  DEC: "",
+  HEX: "",
+};

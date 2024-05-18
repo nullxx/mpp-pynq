@@ -6,9 +6,8 @@ import stateDetails from "./constants.json";
 
 import { Steps } from "antd";
 import IconButton from "../../../../components/IconButton";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, CheckCircleFilled } from "@ant-design/icons";
 import I18n from "../../../../components/i18n";
-const { Step } = Steps;
 
 interface State {
   state: number;
@@ -74,32 +73,27 @@ export default function StateTransition({ data }: { data: any }) {
       </Row>
       <Row>
         <Col size="100%">
-          <Steps direction="vertical" size="small" current={currentStep} type="default" style={{textAlign: 'left'}} >
-            {states.map((state: State, index: number, arr) => {
-              let title = null;
-              if (index === arr.length - 1) {
-
-                title = (
+          <Steps direction="vertical" size="small" current={currentStep} type="default" style={{textAlign: 'left'}} 
+          items={
+            states.map((state: State, index: number, arr) => {
+              const title =
+                index === arr.length - 1 ? (
                   <I18n k="transitionstates.nextState" />
+                ) : (
+                  <>
+                    <CheckCircleFilled style={{ color: "green" }} /> <I18n k="transitionstates.currentState" />
+                  </>
                 );
-              } else if (index === arr.length - 2) {
-                title = (
-                  <I18n k="transitionstates.currentState" />
-                )
-              }
 
-              return (
-                <Step
-                  className="state-transition-step"
-                  key={index}
-                  title={title}
-                  status={index === 0 ? "process" : "finish"}
-                  description={state.op}
-                  progressDot={() => "S" + state.state}
-                />
-              );
-            })}
-          </Steps>
+              return {
+                title: title,
+                description: state.op,
+                progressDot: () => "S" + state.state,
+                subTitle: "S" + state.state,
+              }
+            })
+          } 
+          />
         </Col>
       </Row>
       <Row>

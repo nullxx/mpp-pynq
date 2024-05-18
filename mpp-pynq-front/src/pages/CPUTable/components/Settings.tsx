@@ -19,6 +19,7 @@ export enum SettingType {
   LANGUAGE = "settings::language",
   ONBOARDING = "settings::onboarding",
   MEASURE_RUN_TIME = "settings::measureRunTime",
+  API_CONFIG_URL = "settings::apiConfigUrl",
 }
 
 export enum SettingDefaultValue {
@@ -27,6 +28,7 @@ export enum SettingDefaultValue {
   LANGUAGE = "es",
   ONBOARDING = 1, // true
   MEASURE_RUN_TIME = 1, // true
+  API_CONFIG_URL = "http://localhost:5000",
 }
 
 const listeners = new Map<SettingType, Set<(value: any) => void>>();

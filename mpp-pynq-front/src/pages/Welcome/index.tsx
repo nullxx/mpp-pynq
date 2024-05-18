@@ -4,6 +4,7 @@ import Image from "../../assets/icon.png";
 import Attribution from "../../components/Attribution";
 import I18n from "../../components/i18n";
 import { onInitializingMessageChange } from "../../lib/core";
+import APIConfig from "../../components/APIConfig";
 
 export default function Welcome() {
   const [initializingMessage, setInitializingMessage] = useState<string>("");
@@ -43,6 +44,8 @@ export default function Welcome() {
       <Spin size="large" />
 
       <Attribution />
+
+      <APIConfig />
     </Space>
   );
 }

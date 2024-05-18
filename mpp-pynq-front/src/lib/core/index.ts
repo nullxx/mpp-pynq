@@ -4,6 +4,8 @@ import type { MppCore, UIUpdateCallbackFn } from "./types";
 import { removeAllListeners, uiUpdatesSubscriptions } from '../socketio';
 import { getMppCoreWrapped } from './wrapped';
 import toast from 'react-hot-toast';
+import { getStoredValue } from '../storage';
+import { SettingDefaultValue, SettingType } from '../../pages/CPUTable/components/Settings';
 
 export let mppCore: MppCore | null;
 
@@ -12,7 +14,7 @@ let initializingLastMsg = "";
 type InitializingMessageChangeCallback = (msg: string) => void;
 const initializingMessageChangeListeners = new Set<InitializingMessageChangeCallback>();
 
-const url = process.env.REACT_APP_API_URL;
+const url = getStoredValue(SettingType.API_CONFIG_URL, SettingDefaultValue.API_CONFIG_URL);
 if (!url) throw new Error("API URL not defined");
 
 export const socket = io(url, {
@@ -60,7 +62,7 @@ export async function connectBackend(resolve: () => void) {
 
     if (resolved) return;
     await loadInstance();
-    
+
     setInitializingMessage("Reseting PL...");
     await execute("reset_pl");
 

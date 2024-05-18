@@ -82,16 +82,16 @@ function CPUTable({ hidden }: { hidden: boolean }) {
   return (
     <>
       <Layout style={{ height: "100%" }}>
-        <Header className="mpp-header">
+      <Header className="mpp-header">
           <Row>
-            <Space align="center" style={{ height: "100%" }}>
-              <img src={icon} style={{ width: 30 }} alt="Icon" />
+            <div style={{ alignItems: 'center', display: 'flex', gap: 7 }}>
+              <img src={icon} style={{ width: 30, height: 'auto' }} alt="Icon" />
               <h1 style={{ margin: 0 }}>
                 <I18n k="title" />
               </h1>
               <Github />
               <Docs />
-            </Space>
+            </div>
             <div style={{ flexGrow: 1 }} />
             <Space>
               <Settings />

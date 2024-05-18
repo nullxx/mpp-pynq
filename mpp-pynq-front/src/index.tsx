@@ -5,7 +5,6 @@ import { Client as Styletron } from "styletron-engine-atomic";
 import { Toaster } from "react-hot-toast";
 
 import "./index.css";
-import "antd/dist/antd.min.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import ErrorBoundary from "./components/ErrorBoundary";
