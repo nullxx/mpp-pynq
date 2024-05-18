@@ -1,6 +1,6 @@
 import { Socket } from "socket.io-client";
-import { MppCore, Registers, SocketEvents, UIUpdateCallbackFn, emptyMppCore } from "./types";
-import { emitWithReturn, notifyUpdateToSubscribers } from "../socketio";
+import { MppCore, Registers, SocketEvents, emptyMppCore } from "./types";
+import { emitWithReturn } from "../socketio";
 
 export function getMppCoreWrapped(socket: Socket): MppCore {
     return {

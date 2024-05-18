@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Row, Col, Text } from "atomize";
 
 import NumberBaseInput, { getRadix } from "../../../components/NumberBaseInput";

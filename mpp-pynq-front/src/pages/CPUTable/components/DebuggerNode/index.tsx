@@ -75,6 +75,7 @@ function DebuggerComponent({
 
   useEffect(() => {
     deductOperations(memOffset, offsetPadding);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [offsetPadding, memOffset])
 
   // const result = [] as any[];

@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import { unsubscribeToUIUpdates } from "../../../../lib/core";
 import { Row, Col, Text } from "atomize";
-import { CheckCircleFilled } from "@ant-design/icons";
 import { subscribeToUIUpdates, getCore } from "../../../../lib/core/index";
 import stateDetails from "./constants.json";
 
 import { Steps } from "antd";
-import usePrev from "../../../../hook/usePrev";
 import IconButton from "../../../../components/IconButton";
 import { DeleteOutlined } from "@ant-design/icons";
 import I18n from "../../../../components/i18n";
