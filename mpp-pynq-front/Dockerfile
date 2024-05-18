@@ -1,12 +1,8 @@
 FROM node:alpine AS install-deps
 
-ARG REACT_APP_API_URL
-
 WORKDIR /app
 COPY package.json package.json
 COPY yarn.lock yarn.lock
-
-RUN echo "REACT_APP_API_URL=$REACT_APP_API_URL" > .env
 
 RUN yarn
 

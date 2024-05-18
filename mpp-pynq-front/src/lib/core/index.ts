@@ -67,8 +67,10 @@ export async function connectBackend(resolve: () => void) {
     if (clientCount > 1) {
       const prep = clientCount === 2 ? "is" : "are";
       const prefixPlural = clientCount === 2 ? "another" : "other";
-      setInitializingMessage(`There ${prep} ${clientCount - 1} clients connected to the API. Loading read-only mode!`);
-      toast(`There ${prep} ${clientCount - 1} clients connected to the API. Loading read-only mode!`, {
+      const s = clientCount === 2 ? "" : "s";
+      setInitializingMessage(`There ${prep} ${prefixPlural} ${clientCount === 2 ? '' : clientCount-1} client${s} connected to the API. Loading read-only mode!`);
+      toast(`There ${prep} ${prefixPlural} ${clientCount === 2 ? '' : clientCount-1} client${s} connected to the API. Loading read-only mode!`, {
+        duration: 5000,
         icon: "🔒",
         style: {
           backgroundColor: "#f0ad4e",
@@ -85,14 +87,16 @@ export async function connectBackend(resolve: () => void) {
           element.setAttribute("disabled", "true");
         });
 
-        toast("The app is in read-only mode", {
-          duration: Infinity,
-          icon: "🔒",
-          style: {
-            backgroundColor: "#f0ad4e",
-            color: "#fff"
-          }
-        });
+        setTimeout(() => {
+          toast("Read only mode is enabled", {
+            duration: Infinity,
+            icon: "🔒",
+            style: {
+              backgroundColor: "#f0ad4e",
+              color: "#fff"
+            }
+          });
+        }, 4000);
       }, 1000);
       return;
     }
