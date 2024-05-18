@@ -1,4 +1,4 @@
-<h1 align="center">Welcome to mpp 👋</h1>
+<h1 align="center">Welcome to M++</h1>
 <p>
   <a href="https://opensource.org/licenses/MIT" target="_blank">
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
@@ -8,7 +8,6 @@
   </a>
 </p>
 
-> M++
 
 This is a fork of [the M++ simulator](https://github.com/nullxx/mpp) but instead of a simulator it executes the code on real hardware. This project is intended to be used with the [PYNQ-Z1 board](https://store.digilentinc.com/pynq-z1-python-productivity-for-zynq-7000-arm-fpga-soc/).
 
