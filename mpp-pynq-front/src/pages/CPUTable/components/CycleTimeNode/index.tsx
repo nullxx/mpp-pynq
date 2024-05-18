@@ -10,7 +10,7 @@ import { Progress } from "antd";
 import { red, green, orange } from "@ant-design/colors";
 import I18n from "../../../../components/i18n";
 
-const maxTimeMS = 3;
+const maxTimeMS = 1;
 
 export default function CycleTimeNode({ data }: any) {
   const [lastCycleTime, setLastCycleTime] = React.useState(clockCycleTime);
@@ -41,9 +41,9 @@ export default function CycleTimeNode({ data }: any) {
       <h4><I18n k={data.labelKey} /></h4>
       <Tooltip
         title={
-          lastCycleTime === -1
+          lastCycleTime < 0
             ? null
-            : `It took ${lastCycleTime}ms to complete the last clock cycle`
+            : `It took ${(lastCycleTime).toFixed(1)}ms to complete the last clock cycle`
         }
       >
         <Progress

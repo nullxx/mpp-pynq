@@ -23,8 +23,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nullxx/mpp",
-    "directory": "mpp-front",
+    "url": "https://github.com/nullxx/mpp-pynq",
+    "directory": "mpp-pynq-front",
     "documentation": "https://mpp-docs.nullx.me"
   },
   "homepage": "https://mpp.nullx.me/",
