@@ -147,7 +147,7 @@ const Settings: React.FC = () => {
         title={<I18n k="settings.title" />}
         placement="right"
         onClose={onClose}
-        visible={visible}
+        open={visible}
       >
         <Input.Group size="large">
           <Row gutter={8}>

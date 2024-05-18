@@ -1,13 +1,13 @@
-FROM node:alpine AS install-deps
+FROM node:22-alpine3.19 AS install-deps
 
 WORKDIR /app
 COPY package.json package.json
-COPY yarn.lock yarn.lock
+COPY pnpm-lock.yaml pnpm-lock.yaml
 
-RUN yarn cache clean && yarn config delete proxy && yarn config delete https-proxy && yarn config delete registry && yarn install --frozen-lockfile --network-timeout 1000000
+RUN npm install -g pnpm && pnpm install
 
 
-FROM node:alpine AS build
+FROM node:22-alpine3.19 AS build
 
 ENV GENERATE_SOURCEMAP=false
 
@@ -16,7 +16,7 @@ WORKDIR /app
 COPY . .
 COPY --from=install-deps /app/node_modules /app/node_modules
 
-RUN yarn build
+RUN npm run build
 
 FROM nginx:latest
 COPY deploy/nginx/nginx.conf /etc/nginx/conf.d/default.conf

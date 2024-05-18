@@ -30,7 +30,7 @@ const Info: React.FC = () => {
         title={<I18n k="info.title" />}
         placement="right"
         onClose={onClose}
-        visible={visible}
+        open={visible}
       >
         <Space direction="vertical">
           <Divider style={{margin: 0}}><I18n k="info.about.title" /></Divider>
