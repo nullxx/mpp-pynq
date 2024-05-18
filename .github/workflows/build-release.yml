@@ -39,11 +39,14 @@ jobs:
 
     - name: Checkout repository
       uses: actions/checkout@v2
-
+      
+    - name: Get version from VERSION file
+      id: get_version
+      run: echo "::set-output name=version::$(cat VERSION)"
     
     - name: Build Docker image
       run: |
-        bash build.sh
+        bash build.sh ${{ steps.get_version.outputs.version }}
 
   create-release:
     needs: build
