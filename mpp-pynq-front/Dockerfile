@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package.json package.json
 COPY yarn.lock yarn.lock
 
-RUN yarn
+RUN yarn cache clean && yarn config delete proxy && yarn config delete https-proxy && yarn config delete registry && yarn install --frozen-lockfile --network-timeout 1000000
 
 
 FROM node:alpine AS build
