@@ -24,6 +24,7 @@ export enum Registers {
 }
 
 export enum SocketEvents {
+  GET_CLIENT_COUNT = 'get_client_count',
   RESET_PL = 'reset_pl',
   DOWNLOAD_BITSTREAM = 'download_bitstream',
   RESET = 'reset',
@@ -43,6 +44,7 @@ export enum SocketEvents {
 
 // the data depends on the event
 export interface SocketData {
+  [SocketEvents.GET_CLIENT_COUNT]: {};
   [SocketEvents.RESET_PL]: {};
   [SocketEvents.DOWNLOAD_BITSTREAM]: {};
   [SocketEvents.RESET]: { with_control: boolean };
@@ -62,6 +64,7 @@ export interface SocketData {
 }
 
 export interface SocketResponse {
+  [SocketEvents.GET_CLIENT_COUNT]: { count: number };
   [SocketEvents.RESET_PL]: { status: string };
   [SocketEvents.DOWNLOAD_BITSTREAM]: { status: string };
   [SocketEvents.RESET]: { status: string };
@@ -81,8 +84,7 @@ export interface SocketResponse {
 }
 
 export interface MppCore {
-  // linker_set_update_ui(): void;
-
+  get_client_count(): Promise<number>;
   reset_pl(): Promise<void>;
   download_bitstream(): Promise<void>;
   reset(with_control: boolean): Promise<void>;
@@ -150,9 +152,9 @@ function throwUninitializedError(fnName: keyof (MppCore)): never {
 }
 export function emptyMppCore(): MppCore {
   return {
-    // linker_set_update_ui: () => {
-    //   throwUninitializedError("linker_set_update_ui");
-    // },
+    get_client_count: async () => {
+      throwUninitializedError("get_client_count");
+    },
 
     reset_pl: async () => {
       throwUninitializedError("reset_pl");

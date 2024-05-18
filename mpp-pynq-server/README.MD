@@ -30,3 +30,7 @@ root@pynq:/home/xilinx/mpp# ./run.sh main.py
  * Running on http://127.0.0.1:3000
  * Running on http://192.168.1.128:3000 (Press CTRL+C to quit)
 ```
+
+### Tests
+
+The [tests.ipynb](tests.ipynb) notebook contains unit and integration tests for the M++ architecture. It is recommended to run the tests before deploying the server.

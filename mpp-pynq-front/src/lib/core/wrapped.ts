@@ -6,6 +6,10 @@ export function getMppCoreWrapped(socket: Socket): MppCore {
     return {
         ...emptyMppCore(),
 
+        get_client_count: async () => {
+            return (await emitWithReturn(socket, SocketEvents.GET_CLIENT_COUNT, {})).count;
+        },
+
         reset_pl: async () => {
             await emitWithReturn(socket, SocketEvents.RESET_PL, {});
         },

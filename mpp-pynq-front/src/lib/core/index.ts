@@ -63,6 +63,40 @@ export async function connectBackend(resolve: () => void) {
     if (resolved) return;
     await loadInstance();
 
+    const clientCount = await execute("get_client_count"); // 1 is the current client
+    if (clientCount > 1) {
+      const prep = clientCount === 2 ? "is" : "are";
+      const prefixPlural = clientCount === 2 ? "another" : "other";
+      setInitializingMessage(`There ${prep} ${clientCount - 1} clients connected to the API. Loading read-only mode!`);
+      toast(`There ${prep} ${clientCount - 1} clients connected to the API. Loading read-only mode!`, {
+        icon: "🔒",
+        style: {
+          backgroundColor: "#f0ad4e",
+          color: "#fff"
+        }
+      }
+      );
+
+      resolved = true;
+      resolve();
+      setTimeout(() => {
+        const elements = document.querySelectorAll("button, input, select");
+        elements.forEach((element) => {
+          element.setAttribute("disabled", "true");
+        });
+
+        toast("The app is in read-only mode", {
+          duration: Infinity,
+          icon: "🔒",
+          style: {
+            backgroundColor: "#f0ad4e",
+            color: "#fff"
+          }
+        });
+      }, 1000);
+      return;
+    }
+
     setInitializingMessage("Reseting PL...");
     await execute("reset_pl");
 

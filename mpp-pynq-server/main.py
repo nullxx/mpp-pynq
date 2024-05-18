@@ -7,6 +7,7 @@ from threading import Lock
 app = Flask(__name__)
 
 socketio = SocketIO(app, cors_allowed_origins="*")
+connected_clients = set()
 
 ABORTED_RUNNING_PROGRAM = False
 ABORTED_RUNNING_INSTRUCTION = False
@@ -59,6 +60,16 @@ available_registers = {
     "FZ_REG_OFFSET": 18,
     "FC_REG_OFFSET": 19,
 }
+
+@socketio.on('connect')
+def handle_connect():
+    connected_clients.add(request.sid)
+    socketio.emit('client_count', {'count': len(connected_clients)})
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    connected_clients.remove(request.sid)
+    socketio.emit('client_count', {'count': len(connected_clients)})
 
 def emit_update_ui(requestID):
     socketio.emit("update_ui", {"id": requestID})
@@ -355,6 +366,10 @@ def execute_program(cycle_sleep_time=0, updateUI=False, requestID="") -> float:
     elapsed_time = time.time() - time_start
 
     return elapsed_time
+
+@socketio.on("get_client_count")
+def handle_get_client_count(data):
+    answer_event("get_client_count", {"id": data["id"], "count": len(connected_clients)})
 
 @socketio.on("reset_pl")
 def handle_reset_pl(data):
