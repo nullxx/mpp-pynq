@@ -49,7 +49,7 @@ export default function CycleTimeNode({ data }: any) {
         <Progress
           percent={(lastCycleTime / maxTimeMS) * 100}
           steps={4}
-          format={() => `${lastCycleTime.toFixed(1)}ms`}
+          format={() => `${(lastCycleTime < 0 ? 0 : lastCycleTime).toFixed(1)}ms`}
           success={{ percent: 1000 }}
           strokeColor={[green[6], orange[3], orange[5], red[6]]}
         />
