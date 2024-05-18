@@ -8,24 +8,11 @@
   </a>
 </p>
 
-> Mpp is a simulator for the machine ++
-### Read the [docs](https://mpp-docs.nullx.me)
-### ✨ [Demo](https://mpp.nullx.me)
+> M++
 
-![demo_welcome](demo/demo_welcome.png)
-![demo_board](demo/demo_board.png)
-![demo_info](demo/demo_info.png)
-![demo_coder](demo/demo_coder.png)
-![demo_running](demo/demo_running.png)
+This is a fork of [the M++ simulator](https://github.com/nullxx/mpp) but instead of a simulator it executes the code on real hardware. This project is intended to be used with the [PYNQ-Z1 board](https://store.digilentinc.com/pynq-z1-python-productivity-for-zynq-7000-arm-fpga-soc/).
 
-## Author
-
-👤 **nullx**
-
-* Website: nullx.me
-* Twitter: [@nullxme](https://twitter.com/nullxme)
-* Github: [@nullxx](https://github.com/nullxx)
-* LinkedIn: [Jon Lara Trigo](https://linkedin.com/in/jon-lara-trigo-965ab898/)
+For that purpose, the project was modified to use an flask API server (see [mpp-pynq-server](mpp-pynq-server)) (with WebSockets) where python code interacts with the PYNQ board using the [PYNQ library](https://pynq.readthedocs.io/en/v2.6.1/index.html). 
 
 ## Show your support
 
