@@ -40,9 +40,23 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Get version from VERSION file
+      id: get_version
+      run: echo "::set-output name=version::$(cat VERSION)"
+    
+    - name: Check if Docker image already exists
+      id: check_image
+      run: |
+        VERSION_EXISTS=$(docker pull ${{ secrets.DOCKERHUB_USERNAME }}/mpp-pynq-front:${{ steps.get_version.outputs.version }} && echo "true" || echo "false")
+        echo "::set-output name=exists::$VERSION_EXISTS"
+
     - name: Build Docker image
       run: |
-        bash build.sh
+        if [ "${{ steps.check_image.outputs.exists }}" = "false" ]; then
+          bash build.sh
+        else
+          echo "Docker image with this version already exists. Skipping build and push."
+        fi
 
   create-release:
     needs: build
@@ -52,9 +66,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Get version from VERSION file
-      id: get_version
-      run: echo "::set-output name=version::$(cat VERSION)"
+    - name: Check if GitHub release already exists
+      id: check_release
+      run: |
+        RELEASE_EXISTS=$(curl --silent "https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ steps.get_version.outputs.version }}" && echo "true" || echo "false")
+        echo "::set-output name=exists::$RELEASE_EXISTS"
 
     - name: Create Release
       id: create_release
@@ -66,3 +82,4 @@ jobs:
         release_name: Release ${{ steps.get_version.outputs.version }}
         draft: false
         prerelease: false
+      if: steps.check_release.outputs.exists == 'false'
