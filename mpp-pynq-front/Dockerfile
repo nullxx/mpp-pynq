@@ -1,4 +1,4 @@
-FROM node:22-alpine3.19 AS install-deps
+FROM --platform=linux/amd64 node:22-alpine3.19 AS install-deps
 
 WORKDIR /app
 COPY package.json package.json
@@ -7,7 +7,7 @@ COPY pnpm-lock.yaml pnpm-lock.yaml
 RUN npm install -g pnpm && pnpm install
 
 
-FROM node:22-alpine3.19 AS build
+FROM --platform=linux/amd64 node:22-alpine3.19 AS build
 
 ENV GENERATE_SOURCEMAP=false
 
