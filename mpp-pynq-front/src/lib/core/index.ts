@@ -60,8 +60,9 @@ export async function connectBackend(resolve: () => void) {
       toast.success("Reconnected to API");
     }
 
-    if (resolved) return;
-    await loadInstance();
+    if (!resolved) {
+      await loadInstance();
+    }
 
     const clientCount = await execute("get_client_count"); // 1 is the current client
     if (clientCount > 1) {
