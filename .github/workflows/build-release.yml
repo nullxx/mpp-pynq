@@ -66,6 +66,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Get version from VERSION file
+      id: get_version
+      run: echo "::set-output name=version::$(cat VERSION)"
+
     - name: Release Existence Action
       uses: insightsengineering/release-existence-action@v1.0.0
       id: check_release
