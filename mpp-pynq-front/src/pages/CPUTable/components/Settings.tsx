@@ -28,7 +28,7 @@ export enum SettingDefaultValue {
   LANGUAGE = "es",
   ONBOARDING = 1, // true
   MEASURE_RUN_TIME = 1, // true
-  API_CONFIG_URL = "http://localhost:5000",
+  API_CONFIG_URL = "https://mpp-pynq-api.nullx.me", // default API URL
 }
 
 const listeners = new Map<SettingType, Set<(value: any) => void>>();
