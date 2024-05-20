@@ -121,9 +121,9 @@ const MemoryNode = ({ data, id }: { data: any; id: string }) => {
 
   useUpdateEdges({ data, id });
 
-  async function onUIUpdate() {
+  async function onUIUpdate(controlBus: bigint) {
     setSearchValue(await getCore().get_memory_dir_bus());
-    setLE(await getCore().get_control_bus_le());
+    setLE(Number((BigInt(controlBus) >> BigInt(11)) & BigInt(1)));
   }
 
   React.useEffect(() => {

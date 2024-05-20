@@ -87,11 +87,11 @@ export function getMppCoreWrapped(socket: Socket): MppCore {
         },
 
         get_register_pch: async () => {
-            return Promise.resolve(Infinity)
+            return (await emitWithReturn(socket, SocketEvents.READ_REG, { reg_num: Registers.PC_REG_OFFSET })).value >> 8;
         },
 
         get_register_pcl: async () => {
-            return Promise.resolve(Infinity)
+            return (await emitWithReturn(socket, SocketEvents.READ_REG, { reg_num: Registers.PC_REG_OFFSET })).value & 0xFF;
         },
 
         get_register_pc: async () => {
@@ -111,55 +111,68 @@ export function getMppCoreWrapped(socket: Socket): MppCore {
         },
 
         get_control_bus_ricar: async () => {
-            return Promise.resolve(Infinity)
+            const { control_bus } = (await emitWithReturn(socket, SocketEvents.GET_CONTROL_BUS, {}));
+            return Number((BigInt(control_bus) >> BigInt(34)) & BigInt(1));
         },
 
         get_control_bus_pccar: async () => {
-            return Promise.resolve(Infinity)
+            const { control_bus } = (await emitWithReturn(socket, SocketEvents.GET_CONTROL_BUS, {}));
+            return Number((BigInt(control_bus) >> BigInt(16)) & BigInt(1));
         },
 
         get_control_bus_accar: async () => {
-            return Promise.resolve(Infinity)
+            const { control_bus } = (await emitWithReturn(socket, SocketEvents.GET_CONTROL_BUS, {}));
+            return Number((BigInt(control_bus) >> BigInt(2)) & BigInt(1));
         },
 
         get_control_bus_acbus: async () => {
-            return Promise.resolve(Infinity)
+            const { control_bus } = (await emitWithReturn(socket, SocketEvents.GET_CONTROL_BUS, {}));
+            return Number((BigInt(control_bus) >> BigInt(1)) & BigInt(1));
         },
 
         get_control_bus_spcar: async () => {
-            return Promise.resolve(Infinity)
+            const { control_bus } = (await emitWithReturn(socket, SocketEvents.GET_CONTROL_BUS, {}));
+            return Number((BigInt(control_bus) >> BigInt(29)) & BigInt(1));
         },
 
         get_control_bus_2opcar: async () => {
-            return Promise.resolve(Infinity)
+            const { control_bus } = (await emitWithReturn(socket, SocketEvents.GET_CONTROL_BUS, {}));
+            return Number((BigInt(control_bus) >> BigInt(15)) & BigInt(1));
         },
 
         get_control_bus_hcar: async () => {
-            return Promise.resolve(Infinity)
+            const { control_bus } = (await emitWithReturn(socket, SocketEvents.GET_CONTROL_BUS, {}));
+            return Number((BigInt(control_bus) >> BigInt(6)) & BigInt(1));
         },
 
         get_control_bus_lcar: async () => {
-            return Promise.resolve(Infinity)
+            const { control_bus } = (await emitWithReturn(socket, SocketEvents.GET_CONTROL_BUS, {}));
+            return Number((BigInt(control_bus) >> BigInt(10)) & BigInt(1));
         },
 
         get_control_bus_regcar: async () => {
-            return Promise.resolve(Infinity)
+            const { control_bus } = (await emitWithReturn(socket, SocketEvents.GET_CONTROL_BUS, {}));
+            return Number((BigInt(control_bus) >> BigInt(22)) & BigInt(1));
         },
 
         get_control_bus_regbus: async () => {
-            return Promise.resolve(Infinity)
+            const { control_bus } = (await emitWithReturn(socket, SocketEvents.GET_CONTROL_BUS, {}));
+            return Number((BigInt(control_bus) >> BigInt(21)) & BigInt(1));
         },
 
         get_control_bus_membus: async () => {
-            return Promise.resolve(Infinity)
+            const { control_bus } = (await emitWithReturn(socket, SocketEvents.GET_CONTROL_BUS, {}));
+            return Number((BigInt(control_bus) >> BigInt(12)) & BigInt(1));
         },
 
         get_control_bus_le: async () => {
-            return Promise.resolve(Infinity)
+            const { control_bus } = (await emitWithReturn(socket, SocketEvents.GET_CONTROL_BUS, {}));
+            return Number((BigInt(control_bus) >> BigInt(11)) & BigInt(1));
         },
 
         get_control_bus_selalu: async () => {
-            return Promise.resolve(Infinity)
+            const { control_bus } = (await emitWithReturn(socket, SocketEvents.GET_CONTROL_BUS, {}));
+            return Number((BigInt(control_bus) >> BigInt(30)) & BigInt(0b111));
         },
 
         run_clock_cycle: async (updateUI: boolean) => {

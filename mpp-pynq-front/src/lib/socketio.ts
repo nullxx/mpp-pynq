@@ -8,8 +8,9 @@ function generateId() {
     return Math.random().toString(36).substring(2) + Date.now().toString(36);
 }
 export const uiUpdatesSubscriptions = new Set<UIUpdateCallbackFn>();
-export function notifyUpdateToSubscribers() {
-    uiUpdatesSubscriptions.forEach((callback) => callback());
+export async function notifyUpdateToSubscribers(socket: Socket) {
+    const { control_bus } = (await emitWithReturn(socket, SocketEvents.GET_CONTROL_BUS, {}));
+    uiUpdatesSubscriptions.forEach((callback) => callback(control_bus));
 }
 
 const callbacks = new Map<string, (response: any) => void>();
@@ -20,10 +21,12 @@ let updateUIInited = false;
 
 const listeners = new Map<string, ({ id: string; cb: (data: any) => void; cbErr: (data: any) => void })[]>();
 
+let bindedNotifyUpdateToSubscribers: UIUpdateCallbackFn;
 export function emitWithReturn<T extends SocketEvents>(socket: Socket, event: T, data: SocketData[T]): Promise<SocketResponse[T]> {
     if (!updateUIInited) {
         updateUIInited = true;
-        socket.on('update_ui', notifyUpdateToSubscribers);
+        bindedNotifyUpdateToSubscribers = notifyUpdateToSubscribers.bind(null, socket);
+        socket.on('update_ui', bindedNotifyUpdateToSubscribers);
     }
 
     return new Promise((resolve, reject) => {
@@ -76,7 +79,7 @@ export function removeAllListeners(socket: Socket) {
     });
 
     if (updateUIInited) {
-        socket.off('update_ui', notifyUpdateToSubscribers);
+        socket.off('update_ui', bindedNotifyUpdateToSubscribers);
     }
 
     callbacks.clear();

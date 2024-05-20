@@ -9,11 +9,13 @@ const nodes: Node[] = [
       height: 200,
       controlBusBitLoad: {
         label: "REGCAR",
-        getFunction: "get_control_bus_regcar",
+        // getFunction: "get_control_bus_regcar",
+        controlBusBitPosition: 22,
       },
       controlBusBitRelease: {
         label: "REGBUS",
-        getFunction: "get_control_bus_regbus",
+        // getFunction: "get_control_bus_regbus",
+        controlBusBitPosition: 21,
       },
     },
     draggable: false,
@@ -89,11 +91,13 @@ const nodes: Node[] = [
       height: 63,
       controlBusBitLoad: {
         label: "ACCAR",
-        getFunction: "get_control_bus_accar",
+        // getFunction: "get_control_bus_accar",
+        controlBusBitPosition: 2,
       },
       controlBusBitRelease: {
         label: "ACBUS",
-        getFunction: "get_control_bus_acbus",
+        // getFunction: "get_control_bus_acbus",
+        controlBusBitPosition: 1,
       },
       getFunction: "get_register_acum",
       helpInfoKey: "acum.helpInfo",
@@ -114,7 +118,8 @@ const nodes: Node[] = [
       height: 63,
       controlBusBitLoad: {
         label: "2OPCAR",
-        getFunction: "get_control_bus_2opcar",
+        // getFunction: "get_control_bus_2opcar",
+        controlBusBitPosition: 15,
       },
       getFunction: "get_register_2op",
     },
@@ -133,7 +138,8 @@ const nodes: Node[] = [
       height: 63,
       controlBusBitLoad: {
         label: "PCCAR",
-        getFunction: "get_control_bus_pccar",
+        // getFunction: "get_control_bus_pccar",
+        controlBusBitPosition: 16,
       },
       // controlBusBitRelease: { label: "???", getFunction: 'get_control_bus_pcbus??' },
       getFunction: "get_register_pc",
@@ -155,7 +161,8 @@ const nodes: Node[] = [
       height: 63,
       controlBusBitLoad: {
         label: "SPCAR",
-        getFunction: "get_control_bus_spcar",
+        // getFunction: "get_control_bus_spcar",
+        controlBusBitPosition: 29,
       },
       getFunction: "get_register_sp",
       helpInfoKey: "sp.helpInfo",
@@ -173,7 +180,11 @@ const nodes: Node[] = [
       readOnly: true,
       width: 70,
       height: 63,
-      controlBusBitLoad: { label: "HCAR", getFunction: "get_control_bus_hcar" },
+      controlBusBitLoad: {
+        label: "HCAR",
+        // getFunction: "get_control_bus_hcar"
+        controlBusBitPosition: 6,
+      },
       getFunction: "get_register_h",
     },
   },
@@ -189,7 +200,11 @@ const nodes: Node[] = [
       readOnly: true,
       width: 70,
       height: 63,
-      controlBusBitLoad: { label: "LCAR", getFunction: "get_control_bus_lcar" },
+      controlBusBitLoad: {
+        label: "LCAR",
+        // getFunction: "get_control_bus_lcar"
+        controlBusBitPosition: 10,
+      },
       getFunction: "get_register_l",
     },
   },
@@ -223,7 +238,8 @@ const nodes: Node[] = [
       handlesCount: 1,
       controlBusBitLoad: {
         label: "RICAR",
-        getFunction: "get_control_bus_ricar",
+        // getFunction: "get_control_bus_ricar",
+        controlBusBitPosition: 34,
       },
       getFunction: "get_register_ri",
       helpInfoKey: "ri.helpInfo",
@@ -254,7 +270,8 @@ const nodes: Node[] = [
       // controlBusBitLoad: { label: "Read (1), Write (0)", getFunction: 'get_control_bus_le' },
       controlBusBitRelease: {
         label: "MEMBUS",
-        getFunction: "get_control_bus_membus",
+        // getFunction: "get_control_bus_membus",
+        controlBusBitPosition: 12,
       },
       width: 300,
       helpInfoKey: "memory.helpInfo",

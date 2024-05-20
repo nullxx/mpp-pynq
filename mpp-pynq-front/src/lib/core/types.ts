@@ -30,6 +30,7 @@ export enum SocketEvents {
   RESET = 'reset',
   WRITE_REG = 'write_reg',
   READ_REG = 'read_reg',
+  GET_CONTROL_BUS = 'get_control_bus',
   WRITE_TO_MEM = 'write_to_mem',
   READ_MEM = 'read_mem',
   READ_MEM_BLK = 'read_mem_blk',
@@ -50,6 +51,7 @@ export interface SocketData {
   [SocketEvents.RESET]: { with_control: boolean };
   [SocketEvents.WRITE_REG]: { reg_num: Registers, value: number };
   [SocketEvents.READ_REG]: { reg_num: Registers };
+  [SocketEvents.GET_CONTROL_BUS]: {  };
   [SocketEvents.WRITE_TO_MEM]: { offset: number; value: number };
   [SocketEvents.READ_MEM]: { offset: number };
   [SocketEvents.READ_MEM_BLK]: { range: [number, number] };
@@ -70,6 +72,7 @@ export interface SocketResponse {
   [SocketEvents.RESET]: { status: string };
   [SocketEvents.WRITE_REG]: { status: string };
   [SocketEvents.READ_REG]: { reg_num: Registers, value: number };
+  [SocketEvents.GET_CONTROL_BUS]: { control_bus: bigint; };
   [SocketEvents.WRITE_TO_MEM]: { status: string };
   [SocketEvents.READ_MEM]: { offset: number, value: number };
   [SocketEvents.READ_MEM_BLK]: { range: [number, number]; values: number[] };
@@ -143,7 +146,7 @@ export interface MppCore {
   abort_running(): Promise<void>;
 }
 
-export type UIUpdateCallbackFn = () => void;
+export type UIUpdateCallbackFn = (controlBus: bigint) => void;
 
 function throwUninitializedError(fnName: keyof (MppCore)): never {
   throw new Error(

@@ -2,7 +2,6 @@ import { Row, Col, Text } from "atomize";
 import NumberBaseInput from "../../../components/NumberBaseInput";
 import { useEffect, useState } from "react";
 import {
-  execute,
   subscribeToUIUpdates,
   unsubscribeToUIUpdates,
 } from "../../../lib/core";
@@ -25,8 +24,8 @@ const DEFAULT_SELALU_VALUE = 0;
 export default function ALUNode({ data, id }: any) {
   const [selAlu, setSelAlu] = useState(DEFAULT_SELALU_VALUE);
 
-  async function onUIUpdate() {
-    const selAlu = await execute<number>("get_control_bus_selalu");
+  async function onUIUpdate(controlBus: bigint) {
+    const selAlu = Number((BigInt(controlBus) >> BigInt(30)) & BigInt(0b111));
     setSelAlu(selAlu);
   }
 

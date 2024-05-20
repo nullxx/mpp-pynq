@@ -37,6 +37,8 @@ RE_REG_OFFSET = 16
 ALU_OUT_REG_OFFSET = 17
 FZ_REG_OFFSET = 18
 FC_REG_OFFSET = 19
+CONTROL_BUS_P1_REG_OFFSET = 20
+CONTROL_BUS_P2_REG_OFFSET = 21
 
 available_registers = {
     "PC_REG_OFFSET": 0,
@@ -155,9 +157,17 @@ def write_reg(reg_num, data) -> None:
     base.get_mclk_0.mmio.write(reg_num * 4, data)
 
 
-def read_reg(reg_num) -> int:
-    return base.linker_0.mmio.read(reg_num * 4)
+def read_reg(reg_num: int, *other_reg_num: list[int]) -> int:
+    arr: list[int] = []
+    arr.append(base.linker_0.mmio.read(reg_num * 4))
+    for reg in other_reg_num:
+        arr.append(base.linker_0.mmio.read(reg * 4))
 
+    byte = 0
+    for i in range(len(arr)):
+        byte |= arr[i] << (i * (4 * 8))
+    return byte
+    
 
 def reset_reg(reg_num):
     reg = 0
@@ -426,6 +436,10 @@ def handle_read_reg(data):
     value = read_reg(reg_num)
     answer_event("read_reg", {"id": data["id"], "reg_num": reg_num, "value": value})
 
+@socketio.on("get_control_bus")
+def handle_get_control_bus(data):
+    control_bus = read_reg(CONTROL_BUS_P1_REG_OFFSET, CONTROL_BUS_P2_REG_OFFSET)
+    answer_event("get_control_bus", {"id": data["id"], "control_bus": control_bus})
 
 @socketio.on("write_to_mem")
 def handle_write_to_mem(data):

@@ -1,7 +1,6 @@
 import React from "react";
 import { useReactFlow, useEdges } from "react-flow-renderer";
 import {
-  execute,
   subscribeToUIUpdates,
   unsubscribeToUIUpdates,
 } from "../lib/core";
@@ -16,12 +15,12 @@ export default function useUpdateEdges({
   const reactFlowInstance = useReactFlow();
   const allEdges = useEdges();
 
-  async function onUIUpdate() {
+  async function onUIUpdate(controlBus: bigint) {
     if (data.controlBusBitLoad) {
-      const controlBusBitLoadValue = await execute(
-        data.controlBusBitLoad?.getFunction
-      );
-
+      // const controlBusBitLoadValue = await execute(
+      //   data.controlBusBitLoad?.getFunction
+      // );
+      const controlBusBitLoadValue = Number((BigInt(controlBus) >> BigInt(data.controlBusBitLoad.controlBusBitPosition)) & BigInt(1));
       const targetEdge = allEdges.find((edge) => edge.target === id);
       if (!targetEdge) return;
 
@@ -46,10 +45,11 @@ export default function useUpdateEdges({
     }
 
     if (data.controlBusBitRelease) {
-      const controlBusBitReleaseValue = await execute(
-        data.controlBusBitRelease?.getFunction
-      );
+      // const controlBusBitReleaseValue = await execute(
+      //   data.controlBusBitRelease?.getFunction
+      // );
 
+      const controlBusBitReleaseValue = Number((BigInt(controlBus) >> BigInt(data.controlBusBitRelease.controlBusBitPosition)) & BigInt(1));
       const sourceEdge = allEdges.find((edge) => edge.source === id);
       if (!sourceEdge) return;
 
