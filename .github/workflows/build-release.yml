@@ -42,13 +42,13 @@ jobs:
 
     - name: Get version from VERSION file
       id: get_version
-      run: echo "::set-output name=version::$(cat VERSION)"
+      run: echo "version=$(cat VERSION)" >> $GITHUB_OUTPUT
     
     - name: Check if Docker image already exists
       id: check_image
       run: |
         VERSION_EXISTS=$(docker pull ${{ secrets.DOCKERHUB_USERNAME }}/mpp-pynq-front:${{ steps.get_version.outputs.version }} && echo "true" || echo "false")
-        echo "::set-output name=exists::$VERSION_EXISTS"
+        echo "exists=$VERSION_EXISTS" >> $GITHUB_OUTPUT
 
     - name: Build Docker image
       run: |
@@ -68,7 +68,7 @@ jobs:
 
     - name: Get version from VERSION file
       id: get_version
-      run: echo "::set-output name=version::$(cat VERSION)"
+      run: echo "version=$(cat VERSION)" >> $GITHUB_OUTPUT
 
     - name: Release Existence Action
       uses: insightsengineering/release-existence-action@v1.0.0
