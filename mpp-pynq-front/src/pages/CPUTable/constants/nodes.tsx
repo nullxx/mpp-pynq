@@ -338,5 +338,16 @@ const nodes: Node[] = [
       getFunction: "get_data_bus",
     },
   },
+  {
+    "id": "automata",
+    "position": { x: -1455, y: -229 },
+    "draggable": false,
+    "type": "automataNode",
+    "data": {
+      "labelKey": "automata.label",
+      "width": 400,
+      "height": 500
+    }
+  },
 ];
 export default nodes;
