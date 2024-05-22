@@ -1,7 +1,6 @@
 import React from "react";
 import { useReactFlow, useEdges } from "react-flow-renderer";
 import {
-  execute,
   subscribeToUIUpdates,
   unsubscribeToUIUpdates,
 } from "../lib/core";
@@ -72,10 +71,8 @@ export default function useUpdateEdges({
       });
 
       sourceEdge.label = `${data.controlBusBitRelease.label}: ${controlBusBitReleaseValue}`;
-      let stokeColor = undefined;
       if (controlBusBitReleaseValue === 1) {
         sourceEdge.animated = true;
-        stokeColor = "red";
       } else {
         sourceEdge.animated = false;
       }

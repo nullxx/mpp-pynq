@@ -1,6 +1,5 @@
-import React, { memo } from "react";
+import { memo } from "react";
 import { Text, Row, Col } from "atomize";
-import { Handle, Position } from "react-flow-renderer";
 import useUpdateEdges from "../../../hook/useUpdateEdges";
 import I18n from "../../../components/i18n";
 import Handles from "./Handles";

@@ -16,6 +16,7 @@ function getEdges(isSourceHandle: boolean, pos: string) {
   const key = isSourceHandle ? "sourceHandle" : "targetHandle";
   const positions = allEdges.map((edge) => {
     let data = null;
+    // eslint-disable-next-line no-cond-assign
     if (data = edge[key]) { // databus-bottom-target
       const [, position, , num] = data.split("-");
       if (position === pos) {
