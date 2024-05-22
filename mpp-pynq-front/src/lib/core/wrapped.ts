@@ -46,6 +46,10 @@ export function getMppCoreWrapped(socket: Socket): MppCore {
             return (await emitWithReturn(socket, SocketEvents.READ_REG, { reg_num: Registers.MXDIR_OUT_REG_OFFSET })).value;
         },
 
+        get_dir_bus: async () => {
+            return (await emitWithReturn(socket, SocketEvents.READ_REG, { reg_num: Registers.DIR_BUS_REG_OFFSET })).value;
+        },
+
         get_register_acum: async () => {
             return (await emitWithReturn(socket, SocketEvents.READ_REG, { reg_num: Registers.ACUM_REG_OFFSET })).value;
         },

@@ -8,8 +8,32 @@ import {
   unsubscribeToUIUpdates,
 } from "../../../lib/core";
 import I18n from "../../../components/i18n";
+import allEdges from "../constants/edges";
 
 const DEFAULT_BUS_VALUE = 0;
+
+function getEdges(isSourceHandle: boolean, pos: string) {
+  const key = isSourceHandle ? "sourceHandle" : "targetHandle";
+  const positions = allEdges.map((edge) => {
+    let data = null;
+    if (data = edge[key]) { // databus-bottom-target
+      const [, position, , num] = data.split("-");
+      if (position === pos) {
+        return Number(num);
+      }
+    }
+    return null;
+  })
+    .filter((pos) => pos !== null)
+    .filter((value, index, self) => self.indexOf(value) === index);
+
+  return positions;
+}
+
+const handleSourceBottomPositions = getEdges(true, "bottom");
+const handleTargetBottomPositions = getEdges(false, "bottom");
+const handleSourceTopPositions = getEdges(true, "top");
+const handleTargetTopPositions = getEdges(false, "top");
 
 export default memo(({ data, isConnectable, id }: any) => {
   const [value, setValue] = React.useState(DEFAULT_BUS_VALUE);
@@ -40,12 +64,6 @@ export default memo(({ data, isConnectable, id }: any) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const handleSourceBottomPositions = [10, 40, 80, 100];
-  const handleTargetBottomPositions = [10, 20, 50, 70, 90];
-
-  const handleSourceTopPositions = [5, 20, 37, 55, 72, 90];
-  const handleTargetTopPositions = [30, 45, 60, 77, 95];
 
   return (
     <div
@@ -134,4 +152,6 @@ export default memo(({ data, isConnectable, id }: any) => {
       ))}
     </div>
   );
+}, (prevProps, nextProps) => {
+  return JSON.stringify(prevProps.data) === JSON.stringify(nextProps.data);
 });

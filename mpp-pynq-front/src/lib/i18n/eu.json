@@ -110,5 +110,6 @@
     "tour.settings": "Hemen simulagailua eta beste parametro batzuk konfiguratu ahal izango dituzu.",
     "tour.info": "Hemen simulagailuari buruzko informazioa ikus dezakezu.",
     "tour.openSource": "Eta gogoratu software hau kode irekikoa dela 😋",
-    "status.runningTooLong": "Programak denbora gehiegi darama exekutatzen. (gogoratu bukle infinitu batean egon litekeela) Zer nahi duzu egin?"
+    "status.runningTooLong": "Programak denbora gehiegi darama exekutatzen. (gogoratu bukle infinitu batean egon litekeela) Zer nahi duzu egin?",
+    "mx.label": "MX dir"
 }

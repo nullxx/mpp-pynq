@@ -110,5 +110,6 @@
   "tour.settings": "Here you can configure the emulator and other parameters.",
   "tour.info": "Here you can see information about the emulator.",
   "tour.openSource": "And remember that this software is open source 😋",
-  "status.runningTooLong": "The program has been running for too long. (remember that it could be that an infinite loop has been reached) What do you want to do?"
+  "status.runningTooLong": "The program has been running for too long. (remember that it could be that an infinite loop has been reached) What do you want to do?",
+  "mx.label": "MX dir"
 }

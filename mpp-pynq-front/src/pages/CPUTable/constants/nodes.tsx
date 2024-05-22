@@ -9,17 +9,16 @@ const nodes: Node[] = [
       height: 200,
       controlBusBitLoad: {
         label: "REGCAR",
-        // getFunction: "get_control_bus_regcar",
         controlBusBitPosition: 22,
       },
       controlBusBitRelease: {
         label: "REGBUS",
-        // getFunction: "get_control_bus_regbus",
         controlBusBitPosition: 21,
       },
+      handlePos: ["bottom-target-30", "bottom-source-70"],
     },
     draggable: false,
-    position: { x: -371, y: 24 },
+    position: { x: -440, y: -759 },
     className: "light",
     type: "loadableNode",
     isParent: true,
@@ -65,7 +64,7 @@ const nodes: Node[] = [
   },
   {
     id: "re",
-    position: { x: 200, y: 120 },
+    position: { x: 203, y: 115 },
     parentNode: "registers-bank",
     draggable: false,
     type: "registerNode",
@@ -79,24 +78,23 @@ const nodes: Node[] = [
 
   {
     id: "acum",
-    position: { x: -537, y: -227 },
+    position: { x: -1, y: -590 },
     draggable: false,
     type: "registerNode",
     data: {
       labelKey: "acum.label",
-      handlePos: ["bottom", "top"],
+      // handlePos: ["bottom", "top"],
+      handlePos: ["bottom-target-30", "bottom-source-70", "top-source-50"],
       handlesCount: 2,
       readOnly: true,
       width: 70,
       height: 63,
       controlBusBitLoad: {
         label: "ACCAR",
-        // getFunction: "get_control_bus_accar",
         controlBusBitPosition: 2,
       },
       controlBusBitRelease: {
         label: "ACBUS",
-        // getFunction: "get_control_bus_acbus",
         controlBusBitPosition: 1,
       },
       getFunction: "get_register_acum",
@@ -106,19 +104,17 @@ const nodes: Node[] = [
 
   {
     id: "2op",
-    position: { x: -337, y: -229 },
+    position: { x: 185, y: -590 },
     draggable: false,
     type: "registerNode",
     data: {
       labelKey: "2op.label",
-      handlePos: ["bottom", "top"],
-      handlesCount: 2,
+      handlePos: ["bottom-target-50", "top-source-50"],
       readOnly: true,
       width: 70,
       height: 63,
       controlBusBitLoad: {
         label: "2OPCAR",
-        // getFunction: "get_control_bus_2opcar",
         controlBusBitPosition: 15,
       },
       getFunction: "get_register_2op",
@@ -126,22 +122,20 @@ const nodes: Node[] = [
   },
   {
     id: "pc",
-    position: { x: -751, y: -226 },
+    position: { x: -845.9999999999999, y: -360 },
     draggable: false,
     type: "registerNode",
     data: {
       labelKey: "pc.label",
       readOnly: true,
-      handlePos: ["bottom"],
-      handlesCount: 1,
+      handlePos: ["top-target-50", "bottom-source-50", "bottom-target-25"],
+      // handlesCount: 1,
       width: 70,
       height: 63,
       controlBusBitLoad: {
         label: "PCCAR",
-        // getFunction: "get_control_bus_pccar",
         controlBusBitPosition: 16,
       },
-      // controlBusBitRelease: { label: "???", getFunction: 'get_control_bus_pcbus??' },
       getFunction: "get_register_pc",
       helpInfoKey: "pc.helpInfo",
     },
@@ -149,19 +143,17 @@ const nodes: Node[] = [
 
   {
     id: "sp",
-    position: { x: -137, y: -228 },
+    position: { x: -669, y: -358 },
     draggable: false,
     type: "registerNode",
     data: {
       labelKey: "sp.label",
-      handlePos: ["bottom"],
-      handlesCount: 1,
+      handlePos: ["top-target-50", "bottom-source-50"],
       readOnly: true,
       width: 70,
       height: 63,
       controlBusBitLoad: {
         label: "SPCAR",
-        // getFunction: "get_control_bus_spcar",
         controlBusBitPosition: 29,
       },
       getFunction: "get_register_sp",
@@ -170,19 +162,17 @@ const nodes: Node[] = [
   },
   {
     id: "h",
-    position: { x: 66, y: -225 },
+    position: { x: -494, y: -358 },
     draggable: false,
     type: "registerNode",
     data: {
       labelKey: "h.label",
-      handlePos: ["bottom"],
-      handlesCount: 1,
+      handlePos: ["top-target-50", "bottom-source-100"],
       readOnly: true,
       width: 70,
       height: 63,
       controlBusBitLoad: {
         label: "HCAR",
-        // getFunction: "get_control_bus_hcar"
         controlBusBitPosition: 6,
       },
       getFunction: "get_register_h",
@@ -190,19 +180,17 @@ const nodes: Node[] = [
   },
   {
     id: "l",
-    position: { x: 263, y: -226 },
+    position: { x: -329, y: -358.00000000000006 },
     draggable: false,
     type: "registerNode",
     data: {
       labelKey: "l.label",
-      handlePos: ["bottom"],
-      handlesCount: 1,
+      handlePos: ["top-target-50"],
       readOnly: true,
       width: 70,
       height: 63,
       controlBusBitLoad: {
         label: "LCAR",
-        // getFunction: "get_control_bus_lcar"
         controlBusBitPosition: 10,
       },
       getFunction: "get_register_l",
@@ -217,7 +205,7 @@ const nodes: Node[] = [
       height: 120,
     },
     draggable: false,
-    position: { x: -787, y: 62 },
+    position: { x: -883, y: -679 },
     className: "light",
     type: "loadableNode",
     isParent: true,
@@ -234,15 +222,18 @@ const nodes: Node[] = [
       readOnly: true,
       width: 70,
       height: 63,
-      handlePos: ["top"],
       handlesCount: 1,
       controlBusBitLoad: {
         label: "RICAR",
-        // getFunction: "get_control_bus_ricar",
         controlBusBitPosition: 34,
       },
       getFunction: "get_register_ri",
       helpInfoKey: "ri.helpInfo",
+      handlePos: [
+        "bottom-target-60",
+        "bottom-source-10",
+        "bottom-source-20",
+      ],
     },
   },
   {
@@ -261,16 +252,15 @@ const nodes: Node[] = [
   },
   {
     id: "memory",
-    position: { x: 50, y: 54 },
+    position: { x: 26, y: -234 },
     type: "memoryNode",
     draggable: false,
     data: {
       labelKey: "memory.label",
       readOnly: false,
-      // controlBusBitLoad: { label: "Read (1), Write (0)", getFunction: 'get_control_bus_le' },
+      handlePos: ["left-target-50", "top-target-30", "top-source-73"],
       controlBusBitRelease: {
         label: "MEMBUS",
-        // getFunction: "get_control_bus_membus",
         controlBusBitPosition: 12,
       },
       width: 300,
@@ -279,7 +269,7 @@ const nodes: Node[] = [
   },
   {
     id: "transition-state",
-    position: { x: -1040, y: 141 },
+    position: { x: -1174, y: -430 },
     type: "stateTransition",
     data: {
       labelKey: "transitionstate.label",
@@ -288,7 +278,7 @@ const nodes: Node[] = [
   },
   {
     id: "debugger",
-    position: { x: -1027, y: -229 },
+    position: { x: -1159, y: -706 },
     type: "debuggerNode",
     data: {
       labelKey: "debugger.label",
@@ -297,7 +287,7 @@ const nodes: Node[] = [
   },
   {
     id: "flags",
-    position: { x: -170, y: -378 },
+    position: { x: 349, y: -739 },
     draggable: false,
     type: "flagsNode",
     data: {
@@ -309,7 +299,7 @@ const nodes: Node[] = [
   },
   {
     id: "clockCycleTime",
-    position: { x: -777, y: 207 },
+    position: { x: -1120, y: -226 },
     draggable: false,
     type: "cycleTimeNode",
     data: {
@@ -318,7 +308,7 @@ const nodes: Node[] = [
   },
   {
     id: "alu",
-    position: { x: -448, y: -383 },
+    position: { x: 61.99999999999997, y: -741 },
     draggable: false,
     type: "aluNode",
     data: {
@@ -329,7 +319,7 @@ const nodes: Node[] = [
   },
   {
     id: "databus",
-    position: { x: -760, y: -100 },
+    position: { x: -842, y: -468 },
     draggable: false,
     type: "busNode",
     data: {
@@ -339,15 +329,38 @@ const nodes: Node[] = [
     },
   },
   {
-    "id": "automata",
-    "position": { x: -1455, y: -229 },
-    "draggable": false,
-    "type": "automataNode",
-    "data": {
-      "labelKey": "automata.label",
-      "width": 400,
-      "height": 500
-    }
+    id: "automata",
+    position: { x: 455.9999999999999, y: -696 },
+    draggable: false,
+    type: "automataNode",
+    data: {
+      labelKey: "automata.label",
+      width: 400,
+      height: 500,
+    },
+  },
+  {
+    id: "mx",
+    position: { x: -271, y: -274 },
+    draggable: false,
+    type: "mxNode",
+    data: {
+      labelKey: "mx.label",
+      width: 220,
+      height: 240,
+      handlePos: ["top-target-10", "top-source-5"],
+    },
+  },
+  {
+    id: "inc",
+    position: { x: -63, y: -5 },
+    draggable: false,
+    type: "incNode",
+    data: {
+      "labelKey": "inc.label",
+      "width": 60,
+      "height": 60
+    },
   },
 ];
 export default nodes;

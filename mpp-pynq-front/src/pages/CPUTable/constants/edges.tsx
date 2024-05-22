@@ -27,7 +27,8 @@ const initialEdges: Edge[] = [
       height: 50,
       type: MarkerType.Arrow,
     },
-    sourceHandle: "databus-bottom-source-10",
+    sourceHandle: "databus-top-source-8",
+    targetHandle: "ri-bottom-target-60",
   },
   {
     id: "databus-registersbank",
@@ -40,7 +41,8 @@ const initialEdges: Edge[] = [
       height: 50,
       type: MarkerType.Arrow,
     },
-    sourceHandle: "databus-bottom-source-40",
+    sourceHandle: "databus-top-source-44",
+    targetHandle: "registers-bank-bottom-target-30",
   },
   {
     id: "registersbank-databus",
@@ -53,7 +55,8 @@ const initialEdges: Edge[] = [
       height: 50,
       type: MarkerType.Arrow,
     },
-    targetHandle: "databus-bottom-target-50",
+    targetHandle: "databus-top-target-55",
+    sourceHandle: "registers-bank-bottom-source-70",
   },
   {
     id: "databus-memory",
@@ -67,6 +70,7 @@ const initialEdges: Edge[] = [
       type: MarkerType.Arrow,
     },
     sourceHandle: "databus-bottom-source-80",
+    targetHandle: "memory-top-target-30",
   },
   {
     id: "memory-databus",
@@ -80,8 +84,9 @@ const initialEdges: Edge[] = [
       type: MarkerType.Arrow,
     },
     targetHandle: "databus-bottom-target-90",
+    sourceHandle: "memory-top-source-73",
   },
-  
+
 
   {
     id: "databus-pc",
@@ -94,7 +99,7 @@ const initialEdges: Edge[] = [
       height: 50,
       type: MarkerType.Arrow,
     },
-    sourceHandle: "databus-top-source-5",
+    sourceHandle: "databus-bottom-source-5",
   },
   // {
   //   id: "pc-databus",
@@ -121,7 +126,7 @@ const initialEdges: Edge[] = [
       height: 50,
       type: MarkerType.Arrow,
     },
-    sourceHandle: "databus-top-source-20",
+    sourceHandle: "databus-top-source-75",
     targetHandle: 'acum-bottom-target-30'
   },
   {
@@ -135,7 +140,7 @@ const initialEdges: Edge[] = [
       height: 80,
       type: MarkerType.Arrow,
     },
-    targetHandle: "databus-top-target-30",
+    targetHandle: "databus-top-target-79",
     sourceHandle: 'acum-bottom-source-70'
   },
 
@@ -150,7 +155,7 @@ const initialEdges: Edge[] = [
       height: 50,
       type: MarkerType.Arrow,
     },
-    sourceHandle: "databus-top-source-55",
+    sourceHandle: "databus-bottom-source-21.3",
   },
   // {
   //   id: "sp-databus",
@@ -177,8 +182,8 @@ const initialEdges: Edge[] = [
       height: 50,
       type: MarkerType.Arrow,
     },
-    sourceHandle: "databus-top-source-37",
-    targetHandle: '2op-bottom-target-30'
+    sourceHandle: "databus-top-source-90",
+    targetHandle: '2op-bottom-target-50'
   },
   // {
   //   id: "2op-databus",
@@ -205,7 +210,7 @@ const initialEdges: Edge[] = [
       height: 50,
       type: MarkerType.Arrow,
     },
-    sourceHandle: "databus-top-source-72",
+    sourceHandle: "databus-bottom-source-37.3",
   },
   // {
   //   id: "h-databus",
@@ -232,7 +237,7 @@ const initialEdges: Edge[] = [
       height: 50,
       type: MarkerType.Arrow,
     },
-    sourceHandle: "databus-top-source-90",
+    sourceHandle: "databus-bottom-source-47.3",
   },
   {
     id: "acum-alu",
@@ -246,7 +251,7 @@ const initialEdges: Edge[] = [
       type: MarkerType.Arrow,
     },
     label: "A",
-    sourceHandle: "acum-top-source-70",
+    sourceHandle: "acum-top-source-50",
     targetHandle: 'alu-input-A'
   },
   {
@@ -261,7 +266,7 @@ const initialEdges: Edge[] = [
       type: MarkerType.Arrow,
     },
     label: "B",
-    sourceHandle: "2op-top-source-30",
+    sourceHandle: "2op-top-source-50",
     targetHandle: 'alu-input-B'
   },
   {
@@ -307,6 +312,118 @@ const initialEdges: Edge[] = [
   //   },
   //   targetHandle: "databus-top-target-95",
   // },
+  {
+    id: "pc-mx-00",
+    source: "pc",
+    target: "mx",
+    animated: false,
+    type: "smoothstep",
+    markerEnd: {
+      width: 50,
+      height: 50,
+      type: MarkerType.Arrow,
+    },
+    zIndex: 1,
+    label: "PC",
+    sourceHandle: "pc-bottom-source-50",
+    targetHandle: 'mx-00'
+  },
+  {
+    id: "sp-mx-01",
+    source: "sp",
+    target: "mx",
+    animated: false,
+    type: "smoothstep",
+    zIndex: 1,
+    markerEnd: {
+      width: 50,
+      height: 50,
+      type: MarkerType.Arrow,
+    },
+    label: "SP",
+    // sourceHandle: "sp-bottom-source-10",
+    targetHandle: 'mx-01'
+  },
+  // {
+  //   id: "ri-mx-10",
+  //   source: "ri",
+  //   target: "mx",
+  //   animated: false,
+  //   type: "smoothstep",
+  //   zIndex: 1,
+  //   markerEnd: {
+  //     width: 50,
+  //     height: 50,
+  //     type: MarkerType.Arrow,
+  //   },
+  //   label: "COP-32",
+  //   sourceHandle: "ri-bottom-source-20",
+  //   targetHandle: 'mx-11'
+  // },
+  {
+    id: "h-mx-10",
+    source: "h",
+    target: "mx",
+    animated: false,
+    type: "smoothstep",
+    zIndex: 1,
+    markerEnd: {
+      width: 50,
+      height: 50,
+      type: MarkerType.Arrow,
+    },
+    label: "HL",
+    sourceHandle: "h-bottom-source-100",
+    targetHandle: 'mx-10'
+  },
+  {
+    id: "mx-memory",
+    source: "mx",
+    target: "memory",
+    animated: false,
+    type: "smoothstep",
+    zIndex: 1,
+    markerEnd: {
+      width: 50,
+      height: 50,
+      type: MarkerType.Arrow,
+    },
+    label: "DIR",
+    sourceHandle: "mx-out",
+    targetHandle: 'memory-left-target-50'
+  },
+  {
+    id: "mx-inc",
+    source: "mx",
+    target: "inc",
+    animated: false,
+    type: "smoothstep",
+    zIndex: 0,
+    markerEnd: {
+      width: 50,
+      height: 50,
+      type: MarkerType.Arrow,
+    },
+    label: "",
+    sourceHandle: "mx-out",
+    targetHandle: 'inc-in'
+  },
+  {
+    id: "inc-pc",
+    source: "inc",
+    target: "pc",
+    animated: false,
+    type: "smoothstep",
+    zIndex: 0,
+    markerEnd: {
+      width: 50,
+      height: 50,
+      type: MarkerType.Arrow,
+    },
+    label: "DIR+1",
+    sourceHandle: "inc-out",
+    targetHandle: 'pc-bottom-target-25'
+  },
 ];
 
 export default initialEdges;

@@ -1,6 +1,7 @@
 import React from "react";
 import { useReactFlow, useEdges } from "react-flow-renderer";
 import {
+  execute,
   subscribeToUIUpdates,
   unsubscribeToUIUpdates,
 } from "../lib/core";
@@ -15,14 +16,24 @@ export default function useUpdateEdges({
   const reactFlowInstance = useReactFlow();
   const allEdges = useEdges();
 
+  const [controlBusBitLoadLabel, setControlBusBitLoadLabel] = React.useState(data?.controlBusBitLoad?.label ? { name: data.controlBusBitLoad.label, value: 0 } : undefined);
+  const [controlBusBitReleaseLabel, setControlBusBitReleaseLabel] = React.useState(data?.controlBusBitRelease?.label ? { name: data.controlBusBitRelease.label, value: 0 } : undefined);
+
   async function onUIUpdate(controlBus: bigint) {
     if (data.controlBusBitLoad) {
-      // const controlBusBitLoadValue = await execute(
+      // const controlBusBitLoadValue = execute(
       //   data.controlBusBitLoad?.getFunction
       // );
       const controlBusBitLoadValue = Number((BigInt(controlBus) >> BigInt(data.controlBusBitLoad.controlBusBitPosition)) & BigInt(1));
+
       const targetEdge = allEdges.find((edge) => edge.target === id);
       if (!targetEdge) return;
+
+      // targetEdge.label = `${data.controlBusBitLoad.label}: ${controlBusBitLoadValue}`;
+      setControlBusBitLoadLabel({
+        name: data.controlBusBitLoad.label,
+        value: controlBusBitLoadValue,
+      });
 
       targetEdge.label = `${data.controlBusBitLoad.label}: ${controlBusBitLoadValue}`;
       let stokeColor = undefined;
@@ -45,15 +56,29 @@ export default function useUpdateEdges({
     }
 
     if (data.controlBusBitRelease) {
-      // const controlBusBitReleaseValue = await execute(
+      // const controlBusBitReleaseValue = execute(
       //   data.controlBusBitRelease?.getFunction
       // );
 
       const controlBusBitReleaseValue = Number((BigInt(controlBus) >> BigInt(data.controlBusBitRelease.controlBusBitPosition)) & BigInt(1));
+
       const sourceEdge = allEdges.find((edge) => edge.source === id);
       if (!sourceEdge) return;
 
+      // sourceEdge.label = `${data.controlBusBitRelease.label}: ${controlBusBitReleaseValue}`;
+      setControlBusBitReleaseLabel({
+        name: data.controlBusBitRelease.label,
+        value: controlBusBitReleaseValue,
+      });
+
       sourceEdge.label = `${data.controlBusBitRelease.label}: ${controlBusBitReleaseValue}`;
+      let stokeColor = undefined;
+      if (controlBusBitReleaseValue === 1) {
+        sourceEdge.animated = true;
+        stokeColor = "red";
+      } else {
+        sourceEdge.animated = false;
+      }
 
       const allEdgesEdited = allEdges.map((edge) => {
         if (edge.id === sourceEdge.id) {
@@ -73,4 +98,6 @@ export default function useUpdateEdges({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  return [controlBusBitLoadLabel, controlBusBitReleaseLabel];
 }

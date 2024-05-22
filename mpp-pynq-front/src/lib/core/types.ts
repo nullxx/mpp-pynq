@@ -117,6 +117,8 @@ export interface MppCore {
   get_register_ri(): Promise<number>;
 
   get_data_bus(): Promise<number>;
+  get_dir_bus(): Promise<number>;
+
   get_control_bus_pccar(): Promise<number>;
   get_control_bus_accar(): Promise<number>;
   get_control_bus_acbus(): Promise<number>;
@@ -257,6 +259,10 @@ export function emptyMppCore(): MppCore {
 
     get_data_bus: () => {
       throwUninitializedError("get_data_bus");
+    },
+
+    get_dir_bus: () => {
+      throwUninitializedError("get_dir_bus");
     },
 
     get_control_bus_ricar: () => {

@@ -15,6 +15,7 @@ import { SettingType, SettingDefaultValue } from "./Settings";
 import { Handle, Position } from "react-flow-renderer";
 import useUpdateEdges from "../../../hook/useUpdateEdges";
 import I18n from "../../../components/i18n";
+import Handles from "./Handles";
 
 let maxRepresentableOffset = -1;
 
@@ -153,21 +154,8 @@ const MemoryNode = ({ data, id }: { data: any; id: string }) => {
       }}
       className="pretty-shadow"
     >
-      <Handle
-        type="target"
-        position={Position.Top}
-        style={{ background: "#555", position: "absolute", left: "30%" }}
-        onConnect={(params) => console.log("handle onConnect", params)}
-        isConnectable={false}
-      />
-
-      <Handle
-        type="source"
-        position={Position.Top}
-        style={{ background: "#555", position: "absolute", left: "70%" }}
-        onConnect={(params) => console.log("handle onConnect", params)}
-        isConnectable={false}
-      />
+      <Handles data={data} id={id} />
+      
       <Row>
         <Col>
           <Tooltip title={<I18n k={data.helpInfoKey} />} className="tooltip">
