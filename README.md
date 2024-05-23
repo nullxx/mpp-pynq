@@ -19,7 +19,7 @@ Give a ⭐️ if this project helped you!
 
 ## 📝 License
 
-Copyright © 2022 [nullx](https://github.com/nullxx).<br />
+Copyright © 2022-2024 [nullx](https://github.com/nullxx).<br />
 This project is [MIT](https://opensource.org/licenses/MIT) licensed.
 
 ***
