@@ -4,12 +4,22 @@ import I18n from '../../../components/i18n';
 import { Handle, Position } from '../../../lib/ReactFlow';
 import { getCore, subscribeToUIUpdates, unsubscribeToUIUpdates } from '../../../lib/core';
 
-export default memo(function INCNode({ data, id }: any) {
-    const [value, setValue] = React.useState(1);
+const addSubSel = {
+    0b10: '+1',
+    0b00: '+0',
+    0b11: '-1',
+}
 
-    async function onUIUpdate() {
-        const dirBus = await getCore().get_memory_dir_bus();
-        setValue(dirBus + 1);
+export default memo(function INCNode({ data }: any) {
+    const [value, setValue] = React.useState(1);
+    const [id, setId] = React.useState(0);
+
+    async function onUIUpdate(controlBus: bigint) {
+        const dirBus = await getCore().get_dir_bus();
+        setValue(dirBus);
+
+        const id = Number((BigInt(controlBus) >> BigInt(7)) & BigInt(0b11));
+        setId(id);
     }
 
     useEffect(() => {
@@ -28,6 +38,9 @@ export default memo(function INCNode({ data, id }: any) {
                 width: 100,
                 padding: 8,
                 backgroundColor: "#f5f5f5",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
             }}
             className="pretty-shadow"
         >
@@ -40,7 +53,8 @@ export default memo(function INCNode({ data, id }: any) {
             </Row>
             <Row>
                 <Col size="100%">
-                    <p><b>+1</b> = 0x{value.toString(16).padStart(4, '0').toUpperCase()}</p>
+                    <p style={{margin: 'unset'}}><b>{addSubSel[id as keyof typeof addSubSel]}</b></p>
+                    <span>0x{value.toString(16).padStart(4, '0').toUpperCase()}</span>
                 </Col>
 
                 <Handle
