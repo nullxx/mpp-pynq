@@ -2,11 +2,14 @@ import { Row, Col, Text } from "atomize";
 import NumberBaseInput from "../../../components/NumberBaseInput";
 import { useEffect, useState } from "react";
 import {
+  getCore,
   subscribeToUIUpdates,
   unsubscribeToUIUpdates,
 } from "../../../lib/core";
 import { Handle, Position } from "../../../lib/ReactFlow";
 import I18n from "../../../components/i18n";
+import Handles from "./Handles";
+import useUpdateEdges from "../../../hook/useUpdateEdges";
 
 enum SelAluOp {
   SUM = 0b000,
@@ -23,10 +26,16 @@ const DEFAULT_SELALU_VALUE = 0;
 
 export default function ALUNode({ data, id }: any) {
   const [selAlu, setSelAlu] = useState(DEFAULT_SELALU_VALUE);
+  const [output, setOutput] = useState(0);
+
+  useUpdateEdges({ data, id });
 
   async function onUIUpdate(controlBus: bigint) {
-    const selAlu = Number((BigInt(controlBus) >> BigInt(30)) & BigInt(0b111));
+    const selAlu = Number((BigInt(controlBus) >> BigInt(23)) & BigInt(0b111));
     setSelAlu(selAlu);
+
+    const output = await getCore().get_alu_out();
+    setOutput(output);
   }
 
   useEffect(() => {
@@ -39,6 +48,7 @@ export default function ALUNode({ data, id }: any) {
 
   return (
     <div className="pretty-shadow" style={{ width: 200, padding: 10, backgroundColor: '#f5f5f5' }}>
+      <Handles data={data} id={id} />
       <Handle
         id={`${id}-input-A`}
         type="target"
@@ -95,7 +105,7 @@ export default function ALUNode({ data, id }: any) {
         <Col display="flex">
           <NumberBaseInput
             initialBase="HEX"
-            number={selAlu}
+            number={output}
             width={153}
             readOnly
           />

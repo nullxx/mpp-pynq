@@ -61,7 +61,7 @@ export default function useUpdateEdges({
 
       const controlBusBitReleaseValue = Number((BigInt(controlBus) >> BigInt(data.controlBusBitRelease.controlBusBitPosition)) & BigInt(1));
 
-      const sourceEdge = allEdges.find((edge) => edge.source === id);
+      const sourceEdge = allEdges.find((edge) => edge.source === id && edge.target === data.controlBusBitRelease.targetId);
       if (!sourceEdge) return;
 
       // sourceEdge.label = `${data.controlBusBitRelease.label}: ${controlBusBitReleaseValue}`;

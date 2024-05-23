@@ -14,6 +14,7 @@ const nodes: Node[] = [
       controlBusBitRelease: {
         label: "REGBUS",
         controlBusBitPosition: 21,
+        targetId: "databus",
       },
       handlePos: ["bottom-target-30", "bottom-source-70"],
     },
@@ -96,6 +97,7 @@ const nodes: Node[] = [
       controlBusBitRelease: {
         label: "ACBUS",
         controlBusBitPosition: 1,
+        targetId: "databus",
       },
       getFunction: "get_register_acum",
       helpInfoKey: "acum.helpInfo",
@@ -262,6 +264,7 @@ const nodes: Node[] = [
       controlBusBitRelease: {
         label: "MEMBUS",
         controlBusBitPosition: 12,
+        targetId: "databus",
       },
       width: 300,
       helpInfoKey: "memory.helpInfo",
@@ -313,8 +316,12 @@ const nodes: Node[] = [
     type: "aluNode",
     data: {
       labelKey: "alu.label",
-      handlePos: ["bottom"],
-      handlesCount: 2,
+      handlePos: ["left-source-50"],
+      controlBusBitRelease: {
+        label: "ALUBUS",
+        controlBusBitPosition: 3,
+        targetId: "databus",
+      },
     },
   },
   {

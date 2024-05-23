@@ -100,6 +100,8 @@ export interface MppCore {
   get_memory_value_blk(range: [number, number]): Promise<number[]>;
   get_memory_dir_bus(): Promise<number>;
 
+  get_alu_out(): Promise<number>;
+
   get_register_acum(): Promise<number>;
   get_register_fc(): Promise<number>;
   get_register_fz(): Promise<number>;
@@ -195,6 +197,10 @@ export function emptyMppCore(): MppCore {
 
     get_memory_dir_bus: () => {
       throwUninitializedError("get_memory_dir_bus");
+    },
+
+    get_alu_out: () => {
+      throwUninitializedError("get_alu_out");
     },
 
     get_register_acum: () => {

@@ -50,6 +50,10 @@ export function getMppCoreWrapped(socket: Socket): MppCore {
             return (await emitWithReturn(socket, SocketEvents.READ_REG, { reg_num: Registers.DIR_BUS_REG_OFFSET })).value;
         },
 
+        get_alu_out: async () => {
+            return (await emitWithReturn(socket, SocketEvents.READ_REG, { reg_num: Registers.ALU_OUT_REG_OFFSET })).value;
+        },
+
         get_register_acum: async () => {
             return (await emitWithReturn(socket, SocketEvents.READ_REG, { reg_num: Registers.ACUM_REG_OFFSET })).value;
         },
@@ -176,7 +180,7 @@ export function getMppCoreWrapped(socket: Socket): MppCore {
 
         get_control_bus_selalu: async () => {
             const { control_bus } = (await emitWithReturn(socket, SocketEvents.GET_CONTROL_BUS, {}));
-            return Number((BigInt(control_bus) >> BigInt(30)) & BigInt(0b111));
+            return Number((BigInt(control_bus) >> BigInt(23)) & BigInt(0b111));
         },
 
         run_clock_cycle: async (updateUI: boolean) => {

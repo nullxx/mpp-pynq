@@ -45,36 +45,44 @@ function MemoryComponentRow({
   );
 }
 
-function MemoryComponent({ offset, base }: { offset: number; base: Base }) {
+function MemoryComponent({ base }: { base: Base }) {
   const radix = getRadix(base);
 
-  const prevOffset = Number(offset - 1);
-  const currOffset = Number(offset);
-  const nextOffset = Number(offset + 1);
+  const [[currOffset, prevOffset, nextOffset], setOffsets] = React.useState([0, 0, 0]);
+
 
   const [prevValue, setPrevValue] = React.useState(0);
   const [currValue, setCurrValue] = React.useState(0);
   const [nextValue, setNextValue] = React.useState(0);
 
-  async function loadValues() {
+  async function loadValues(offset: number) {
+    const prevOffset = Number(offset - 1);
+    const currOffset = Number(offset);
+    const nextOffset = Number(offset + 1);
+    setOffsets([currOffset, prevOffset, nextOffset]);
+
     const values = await getCore().get_memory_value_blk([prevOffset, nextOffset]);
     setPrevValue(values[0]);
     setCurrValue(values[1]);
     setNextValue(values[2]);
   }
 
+  async function onUIUpdate() {
+    loadValues(await getCore().get_memory_dir_bus());
+  }
+
   React.useEffect(() => {
-    subscribeToUIUpdates(loadValues);
+    subscribeToUIUpdates(onUIUpdate);
     return () => {
-      unsubscribeToUIUpdates(loadValues);
+      unsubscribeToUIUpdates(onUIUpdate);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    loadValues();
+    loadValues(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [offset]);
+  }, [base]);
 
   const valueBaseRadix = getRadix(
     getStoredValue(
@@ -178,7 +186,7 @@ const MemoryNode = ({ data, id }: { data: any; id: string }) => {
       </Row>
       <Row>
         <Col size="100%">
-          <MemoryComponent offset={searchValue} base={base} />
+          <MemoryComponent base={base} />
         </Col>
       </Row>
       <Row>

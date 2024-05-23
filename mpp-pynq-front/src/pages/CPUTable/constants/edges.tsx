@@ -424,6 +424,22 @@ const initialEdges: Edge[] = [
     sourceHandle: "inc-out",
     targetHandle: 'pc-bottom-target-25'
   },
+  {
+    id: "alu-databus",
+    source: "alu",
+    target: "databus",
+    animated: false,
+    type: "smoothstep",
+    zIndex: 0,
+    markerEnd: {
+      width: 50,
+      height: 50,
+      type: MarkerType.Arrow,
+    },
+    // label: "DIR+1",
+    sourceHandle: "alu-left-source-50",
+    targetHandle: 'databus-top-target-69.5'
+  },
 ];
 
 export default initialEdges;
